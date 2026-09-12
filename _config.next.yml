@@ -14,9 +14,18 @@ sidebar:
   display: post
   width_expanded: 300
 
-# Sidebar avatar — put your photo at source/images/avatar.png and set the path.
+# Site logo / favicon (source/images/logo.svg is the master; PNGs are
+# rendered from it with rsvg-convert at 16, 32, 180 and 512 px).
+favicon:
+  small: /images/favicon-16x16.png
+  medium: /images/favicon-32x32.png
+  apple_touch_icon: /images/apple-touch-icon.png
+  safari_pinned_tab: /images/logo-mask.svg
+
+# Sidebar avatar — the logo for now; swap in a photo by dropping it at
+# source/images/avatar.png and pointing `url` at it.
 avatar:
-  url: #/images/avatar.png
+  url: /images/logo-512.png
   rounded: true
 
 # Creative Commons badge under the avatar (license itself defaults to by-nc-sa).
@@ -27,6 +36,7 @@ creative_commons:
 menu:
   home: / || fa fa-home
   about: /about/ || fa fa-user
+  categories: /categories/ || fa fa-th
   archives: /archives/ || fa fa-archive
   talks: /talks/ || fa fa-comments
 

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="hector.software">
+  <!-- A world (sphere) with a tilted orbit passing behind and in front of it,
+       and one node riding the orbit: an agent that carries a model of its world. -->
+  <defs>
+    <clipPath id="front"><rect x="0" y="32" width="64" height="32"/></clipPath>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#0f1c2e"/>
+  <g transform="rotate(-28 32 32)">
+    <ellipse cx="32" cy="32" rx="26" ry="10" fill="none" stroke="#2fb7b0" stroke-width="5.5"/>
+    <circle cx="32" cy="32" r="13.5" fill="#eef7f7"/>
+    <ellipse cx="32" cy="32" rx="26" ry="10" fill="none" stroke="#2fb7b0" stroke-width="5.5" clip-path="url(#front)"/>
+    <circle cx="48.7" cy="39.7" r="4.2" fill="#ffffff" stroke="#0f1c2e" stroke-width="1.6"/>
+  </g>
+</svg>
