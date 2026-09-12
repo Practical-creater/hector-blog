@@ -5,8 +5,8 @@
 # Site
 title: Hector's Blog
 subtitle: ''
-description: ''
-keywords:
+description: Notes on world models, AI research and software engineering.
+keywords: world models, AI, machine learning, research, engineering
 author: Hector
 language: en
 timezone: ''
@@ -100,5 +100,20 @@ theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
+## Not used: Cloudflare Workers Builds deploys on push to main (see README).
 deploy:
   type: ''
+
+# hexo-generator-sitemap — https://hector.software/sitemap.xml (also named in source/robots.txt)
+sitemap:
+  path: sitemap.xml
+  tags: false
+  categories: false
+
+# hexo-generator-feed — Atom feed at https://hector.software/atom.xml
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
+  content: true
+  order_by: -date

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hector.software/sitemap.xml

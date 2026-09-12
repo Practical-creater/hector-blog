@@ -1,0 +1,28 @@
+# Build check for pull requests (including Dependabot's) and non-main
+# branches. Production deploys are done by Cloudflare Workers Builds on
+# push to main; this workflow exists so a broken dependency bump is caught
+# before it is merged, not after it is live.
+name: Build check
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Sanity-check the generated site
+        run: |
+          test -f public/index.html
+          test -f public/404.html
+          test -f public/sitemap.xml
+          test -f public/atom.xml

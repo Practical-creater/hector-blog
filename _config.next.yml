@@ -47,28 +47,34 @@ social:
 
 # Typography: IBM Plex Sans for reading, IBM Plex Mono for the site title,
 # headings and code — keeps the "terminal" flavour of the reference site
-# without copying its all-monospace look. Fonts come from a Google Fonts
-# mirror reachable from mainland China; set `enable: false` to fall back
-# to system fonts if it is ever slow.
+# without copying its all-monospace look. `external: false` = do not load
+# from any font host; the @font-face rules in source/_data/styles.styl serve
+# the woff2 files from /fonts on this site instead.
 font:
   enable: true
-  host: https://fonts.loli.net
   global:
-    external: true
+    external: false
     family: IBM Plex Sans
   title:
-    external: true
+    external: false
     family: IBM Plex Mono
   headings:
-    external: true
+    external: false
     family: IBM Plex Mono
   codes:
-    external: true
+    external: false
     family: IBM Plex Mono
 
-# Custom palette (teal accent instead of NexT's default blue/black).
+# Custom palette (variables.styl) and self-hosted @font-face rules (styles.styl).
 custom_file_path:
   variable: source/_data/variables.styl
+  style: source/_data/styles.styl
+
+# Serve NexT's third-party libraries (Font Awesome, Prism, MathJax, search…)
+# from this site instead of a public CDN. Requires the @next-theme/plugins
+# package, which pins the exact versions NexT was tested with.
+vendors:
+  plugins: local
 
 # Browser chrome colour on mobile.
 theme_color:
