@@ -70,11 +70,12 @@ custom_file_path:
   variable: source/_data/variables.styl
   style: source/_data/styles.styl
 
-# Serve NexT's third-party libraries (Font Awesome, Prism, MathJax, search…)
-# from this site instead of a public CDN. Requires the @next-theme/plugins
-# package, which pins the exact versions NexT was tested with.
-vendors:
-  plugins: local
+# Third-party libraries (Font Awesome, Prism, MathJax…) stay on cdnjs, which is
+# Cloudflare's own CDN. `vendors.plugins: local` was tried and reverted:
+# Cloudflare's static-asset server 307-redirects paths containing `@`
+# (/lib/@fortawesome/…) to their %40-encoded form, adding an uncacheable
+# redirect to every page's render-blocking CSS. cdnjs is the theme default,
+# so there is nothing to set here.
 
 # Browser chrome colour on mobile.
 theme_color:

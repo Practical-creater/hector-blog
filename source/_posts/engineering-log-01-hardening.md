@@ -55,11 +55,11 @@ feed:
 
 **字体**：`@fontsource/ibm-plex-sans` 和 `@fontsource/ibm-plex-mono` 这两个 npm 包里有按字重切好的 woff2 文件（OFL 1.1 许可）。取 latin 子集的 8 个文件放进 `source/fonts/`，一共 176 KB；`@font-face` 规则写在 `source/_data/styles.styl`，通过 NexT 的 `custom_file_path.style` 注入；主题配置里字体的 `external` 全部改为 `false`，NexT 就不再生成指向外部字体站的 `<link>`。中文回落到系统字体，不需要下载。
 
-**库**：NexT 提供 `vendors.plugins: local`，配合 `@next-theme/plugins` 这个包（它把主题测试过的库版本全部锁定为依赖），构建时把库文件复制到 `public/lib/`。代价是这一步复制了 15 MB、474 个文件，其中包括没启用的 mermaid、gitalk、katex——页面不会加载它们，只是首次部署多上传一次；wrangler 按内容哈希增量上传，之后不变的文件不会重传。仓库本身不受影响，`public/` 从来不进 git。
+**库**：NexT 提供 `vendors.plugins: local`，配合 `@next-theme/plugins` 这个包把主题测试过的库版本锁定为依赖，构建时把库文件复制到 `public/lib/`。本地构建一切正常（15 MB、474 个文件），上线后用 `curl -I` 核对却发现每个页面多了一次 307：Cloudflare 的静态资源服务会把路径里的 `@`（`/lib/@fortawesome/...`）规范化成 `%40` 再重定向，而 NexT 生成的 HTML 引用的是带 `@` 的原始路径。Font Awesome 的样式表是阻塞渲染的，每次加载都先吃一个不可缓存的 307，比从 CDN 直接拿还慢。于是这一项回退：库继续走主题默认的 `cdnjs`——那是 Cloudflare 自家的 CDN，和本站同一张网，可靠性不是问题；真正不稳定的只有那个字体镜像站，而字体已经自托管。
 
 **保留 busuanzi**：计数本质上就是远程服务，自托管没有意义。它挂了页脚数字空白，不影响其他内容。
 
-验证：构建后 `grep -oE 'https?://[a-z0-9.-]+' public/index.html` 只剩 busuanzi 和几个页脚的普通链接；`public/css/main.css` 里有 8 条 `@font-face`，全部指向 `/fonts/`。
+验证：`public/css/main.css` 里有 8 条 `@font-face`，全部指向 `/fonts/`；首页的外部资源只剩 cdnjs（库）和 busuanzi（计数），字体镜像站的引用消失；线上对每个资源 `curl -I`，全部 200，没有重定向。
 
 顺手用一个公式验证本地 MathJax 能不能正常渲染——世界模型里最常见的那种潜空间预测损失：
 
@@ -90,6 +90,6 @@ Dependabot 改成每月一次、最多 5 个 PR、`hexo*` 系列打包成一个 
 
 ## 结果
 
-构建：553 个文件，16 MB，330 毫秒。首页外部请求只剩 busuanzi。`npm ci` 在本地和 CI 两种 npm 版本下都通过。仓库新增内容不到 200 KB（字体）加几个配置文件。
+构建：不到一百个文件，三百多毫秒。首页的外部请求从三家减到两家（cdnjs、busuanzi），字体全部由本站提供。`npm ci` 在本地和 CI 两种 npm 版本下都通过。仓库新增内容不到 200 KB（字体）加几个配置文件。一条经验：本地 `hexo generate` 看起来完美的改动，仍然要上线后对每个资源 `curl -I` 看一遍状态码——这次的 307 只有线上才会出现。
 
 还没做、也不急的：`post_asset_folder` 按文章管理图片、图片压缩与懒加载、Cloudflare Web Analytics、评论区。等真正需要的时候再加，每一项都是十分钟量级。
