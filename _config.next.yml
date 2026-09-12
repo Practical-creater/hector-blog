@@ -76,8 +76,12 @@ footer:
 busuanzi_count:
   enable: true
 
-# Bilingual UI strings follow each post's `lang:` front-matter.
-language_switcher: true
+# Footer language dropdown is OFF on purpose: it links to /en/... URLs that
+# only exist when the site is generated as one full tree per language. This
+# site doesn't do that — each post simply declares its own `lang:` and NexT
+# renders that post's UI strings in that language. (Off also re-enables the
+# theme's build cache.)
+language_switcher: false
 
 # Local full-text search (adds the Search icon to the menu).
 local_search:
