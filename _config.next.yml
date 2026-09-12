@@ -1,0 +1,39 @@
+# NexT theme override config
+# Docs: https://theme-next.js.org/docs/getting-started/configuration
+# Only put values here that differ from the theme's own defaults
+# (node_modules/hexo-theme-next/_config.yml) — keeps this file small
+# and merge-safe when the theme is upgraded via `pnpm update`.
+
+# Double-column layout with a fixed left sidebar (matches the reference site).
+scheme: Pisces
+
+# Show the Creative Commons badge in the sidebar.
+# license itself already defaults to by-nc-sa in the theme, we only need
+# to turn sidebar display on.
+creative_commons:
+  sidebar: true
+
+# Sidebar avatar — replace with your own photo.
+# Put an image file at source/images/avatar.png (or similar) and point here.
+avatar:
+  url: #/images/avatar.png
+  rounded: true
+
+# Top navigation menu (icon + label, matches Home / About / Archives / Talks / Search).
+menu:
+  home: / || fa fa-home
+  about: /about/ || fa fa-user
+  archives: /archives/ || fa fa-archive
+  talks: /talks/ || fa fa-comments
+
+# Social links — fill in your own, e.g.:
+# GitHub: https://github.com/yourname || fab fa-github
+social:
+
+# Bilingual UI: switch NexT's own interface strings (menu labels, dates, etc.)
+# based on each page/post's `lang:` front-matter.
+language_switcher: true
+
+# Local full-text search (adds the Search icon in the nav automatically).
+local_search:
+  enable: true
