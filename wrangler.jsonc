@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Project name — must match the "Project name" field in the Cloudflare
+  // dashboard wizard (prefilled as "hector-blog" from the repo name).
+  "name": "hector-blog",
+  "compatibility_date": "2026-09-12",
+  // Hexo's build output. `hexo generate` (the Build command) writes here;
+  // `wrangler deploy` (the Deploy command) serves this directory as static
+  // assets — this is what replaces the old Pages dashboard's separate
+  // "Build output directory" text field.
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "404-page"
+  }
+}
