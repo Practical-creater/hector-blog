@@ -1,0 +1,17 @@
+// Custom palette for hector.software.
+// NexT injects this file after its own variables (see custom_file_path in
+// _config.next.yml), so anything set here overrides the theme defaults.
+// Names come from node_modules/hexo-theme-next/source/css/_variables/base.styl.
+
+$teal        = #1f6f78;
+$teal-deep   = #14525a;
+$teal-light  = #8fd3d3;
+
+// Links stay dark like the body text; the underline and hover state carry
+// the accent, and dark mode uses the lighter teal for contrast.
+$link-hover-color       = $teal;
+$link-hover-color-dark  = $teal-light;
+$link-decoration-color  = $teal-light;
+
+// Active item highlight inside the dark sidebar (TOC, nav).
+$sidebar-highlight      = $teal-light;

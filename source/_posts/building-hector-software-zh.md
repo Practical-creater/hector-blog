@@ -63,12 +63,12 @@ npm install
 npm install hexo-theme-next hexo-generator-searchdb
 ```
 
-NexT 有四种布局方案：Muse、Mist、Pisces、Gemini。前两种是单栏，后两种是带固定侧边栏的双栏。我想要的效果是左侧一条深色侧栏放头像、文章统计和版权标识，右侧放内容，这对应 **Pisces**。我最初凭印象选了 Mist，出来完全是另一副样子，所以别猜，去官方文档看四张截图再决定。
+NexT 有四种布局方案：Muse、Mist、Pisces、Gemini。前两种是单栏，侧边栏默认收起，点页面左下角的按钮才滑出来；后两种是双栏，侧边栏固定在旁边。我参考的那个站页脚写着 "Powered by Hexo & NexT.Mist"，深色的头像面板其实就是 **Mist** 滑出来的侧边栏。我一开始拿着一张侧边栏展开状态的截图，把它当成了 Pisces 的双栏布局，改完发现整个页面结构都不一样，又改了回来。教训很简单：想借鉴哪个站的布局，先看它页脚的方案名，别对着图猜。
 
 主题的所有个性化设置写在项目根目录一个叫 `_config.next.yml` 的文件里，而不是去改 `node_modules` 里主题自带的配置。这样以后升级主题时你的改动不会被覆盖：
 
 ```yaml
-scheme: Pisces
+scheme: Mist
 creative_commons:
   sidebar: true
 language_switcher: true

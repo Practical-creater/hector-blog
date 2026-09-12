@@ -63,12 +63,12 @@ npm install
 npm install hexo-theme-next hexo-generator-searchdb
 ```
 
-NexT ships four layout schemes: Muse, Mist, Pisces, and Gemini. The first two are single-column; the last two are two-column with a fixed sidebar. What I wanted was a dark sidebar on the left holding an avatar, post statistics, and a license badge, with the content on the right — that's **Pisces**. I initially picked Mist from memory and got something entirely different, so don't guess; look at the four screenshots in the official docs before choosing.
+NexT ships four layout schemes: Muse, Mist, Pisces, and Gemini. The first two are single-column, with a sidebar that stays hidden until you tap the button in the bottom-left corner; the last two are two-column, with the sidebar fixed in place. The site I was modelling says "Powered by Hexo & NexT.Mist" in its footer, and the dark panel with the avatar is simply **Mist**'s slide-in sidebar. Working from a screenshot taken with that sidebar open, I mistook it for Pisces' two-column layout, switched, got a page with a completely different structure, and switched back. The lesson is trivial: if you want to borrow a site's layout, read the scheme name in its footer instead of guessing from a picture.
 
 All theme customization goes into a file called `_config.next.yml` at the project root, rather than editing the copy of the theme's config inside `node_modules`. That way upgrading the theme later never overwrites your changes:
 
 ```yaml
-scheme: Pisces
+scheme: Mist
 creative_commons:
   sidebar: true
 language_switcher: true

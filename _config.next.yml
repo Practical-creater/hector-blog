@@ -1,39 +1,95 @@
 # NexT theme override config
 # Docs: https://theme-next.js.org/docs/getting-started/configuration
-# Only put values here that differ from the theme's own defaults
-# (node_modules/hexo-theme-next/_config.yml) — keeps this file small
-# and merge-safe when the theme is upgraded via `pnpm update`.
+# Only values that differ from the theme's own defaults live here
+# (node_modules/hexo-theme-next/_config.yml). Hexo deep-merges this file over
+# the defaults, so upgrading the theme never touches these settings.
 
-# Double-column layout with a fixed left sidebar (matches the reference site).
-scheme: Pisces
+# Single-column layout with a slide-in sidebar (toggle at the bottom-left).
+# Same family as the reference site — its footer says "NexT.Mist".
+scheme: Mist
 
-# Show the Creative Commons badge in the sidebar.
-# license itself already defaults to by-nc-sa in the theme, we only need
-# to turn sidebar display on.
-creative_commons:
-  sidebar: true
+# Sidebar: collapsed on the index page, opens automatically on posts.
+# Use `always` to keep it open on every page.
+sidebar:
+  display: post
+  width_expanded: 300
 
-# Sidebar avatar — replace with your own photo.
-# Put an image file at source/images/avatar.png (or similar) and point here.
+# Sidebar avatar — put your photo at source/images/avatar.png and set the path.
 avatar:
   url: #/images/avatar.png
   rounded: true
 
-# Top navigation menu (icon + label, matches Home / About / Archives / Talks / Search).
+# Creative Commons badge under the avatar (license itself defaults to by-nc-sa).
+creative_commons:
+  sidebar: true
+
+# Top navigation: icon + label. Search is added automatically by local_search.
 menu:
   home: / || fa fa-home
   about: /about/ || fa fa-user
   archives: /archives/ || fa fa-archive
   talks: /talks/ || fa fa-comments
 
-# Social links — fill in your own, e.g.:
-# GitHub: https://github.com/yourname || fab fa-github
+# Social links under the avatar — fill in your own, e.g.
+#   GitHub: https://github.com/yourname || fab fa-github
+#   E-Mail: mailto:you@example.com || fa fa-envelope
 social:
 
-# Bilingual UI: switch NexT's own interface strings (menu labels, dates, etc.)
-# based on each page/post's `lang:` front-matter.
+# Typography: IBM Plex Sans for reading, IBM Plex Mono for the site title,
+# headings and code — keeps the "terminal" flavour of the reference site
+# without copying its all-monospace look. Fonts come from a Google Fonts
+# mirror reachable from mainland China; set `enable: false` to fall back
+# to system fonts if it is ever slow.
+font:
+  enable: true
+  host: https://fonts.loli.net
+  global:
+    external: true
+    family: IBM Plex Sans
+  title:
+    external: true
+    family: IBM Plex Mono
+  headings:
+    external: true
+    family: IBM Plex Mono
+  codes:
+    external: true
+    family: IBM Plex Mono
+
+# Custom palette (teal accent instead of NexT's default blue/black).
+custom_file_path:
+  variable: source/_data/variables.styl
+
+# Browser chrome colour on mobile.
+theme_color:
+  light: "#1f6f78"
+  dark: "#1f6f78"
+
+footer:
+  since: 2026
+  icon:
+    name: fa fa-terminal
+    color: "#1f6f78"
+
+# Visitor / page-view counters in the footer (third-party busuanzi service;
+# harmless to disable if it ever goes offline).
+busuanzi_count:
+  enable: true
+
+# Bilingual UI strings follow each post's `lang:` front-matter.
 language_switcher: true
 
-# Local full-text search (adds the Search icon in the nav automatically).
+# Local full-text search (adds the Search icon to the menu).
 local_search:
   enable: true
+
+# Math: scripts load only on posts that set `mathjax: true` in front-matter.
+math:
+  mathjax:
+    enable: true
+
+# Copy button on code blocks.
+codeblock:
+  copy_button:
+    enable: true
+    style: mac
