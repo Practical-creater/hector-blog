@@ -6,3 +6,5 @@ node_modules/
 public/
 .deploy*/
 _multiconfig.yml
+# Obsidian vault metadata (if you open source/ as a vault)
+.obsidian/

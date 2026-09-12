@@ -1,0 +1,6 @@
+# Custom UI strings, deep-merged over NexT's languages/en.yml.
+# Menu keys without a built-in translation (like `talks`) would otherwise
+# show their raw key name in the navigation.
+en:
+  menu:
+    talks: Talks

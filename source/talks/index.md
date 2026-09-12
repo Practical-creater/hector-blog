@@ -1,5 +1,5 @@
 ---
-title: talks
+title: Talks
 date: 2026-09-12 12:35:00
 ---
 

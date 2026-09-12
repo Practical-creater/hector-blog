@@ -1,7 +1,6 @@
 ---
 title: 从零搭建 hector.software：域名、Cloudflare、Hexo，以及一路踩过的坑
 date: 2026-09-12 12:00:00
-lang: zh-CN
 categories: Meta
 tags:
   - Hexo
@@ -71,7 +70,6 @@ NexT 有四种布局方案：Muse、Mist、Pisces、Gemini。前两种是单栏�
 scheme: Mist
 creative_commons:
   sidebar: true
-language_switcher: true
 local_search:
   enable: true
 menu:
@@ -81,7 +79,7 @@ menu:
   talks: /talks/ || fa fa-comments
 ```
 
-根目录的 `_config.yml` 里有几项必须改：`title` 和 `author` 填自己的；`url` 填 `https://hector.software`，Hexo 用它生成站内所有链接、RSS 和站点地图，填错了以后每个链接都指向 `example.com`；`language` 我写成了 `[zh-CN, en]`，然后每篇文章的头部用 `lang: zh-CN` 或 `lang: en` 标记自己的语言，NexT 会据此切换界面文案（日期、"阅读全文"这类字样）。这是一种轻量的双语做法，代价是首页文章列表中英文混排。真正把两种语言拆成两套独立页面需要额外的生成插件，我评估后觉得那个插件维护状态不太好，先不引入。
+根目录的 `_config.yml` 里有几项必须改：`title` 和 `author` 填自己的；`url` 填 `https://hector.software`，Hexo 用它生成站内所有链接、RSS 和站点地图，填错了以后每个链接都指向 `example.com`；`language` 设为 `en`，导航、日期、"Read more" 这些界面文案全部是英文，文章正文想用中文还是英文都可以——参考站也是这样，界面英文、正文中英混排。我最初试过 `[zh-CN, en]` 加每篇文章标记 `lang` 的做法，让界面跟着文章语言切换，结果是同一个站一页中文一页英文，页脚还多出一个会 404 的语言切换框，后来统一成了英文界面。
 
 跑 `hexo server` 后打开 `http://localhost:4000` 就能看到本地效果，改配置或文章会自动刷新。
 
@@ -201,7 +199,7 @@ hexo server                       # 本地预览，http://localhost:4000
 git add -A && git commit -m "post: my new post" && git push
 ```
 
-推送后一分钟左右，Cloudflare 的 Deployments 标签页会出现一条新构建，跑完网站就更新了。文章文件顶部的 front-matter 记得写 `lang: zh-CN` 或 `lang: en`，英文版和中文版是两个独立的文件。想先写着不发布，用 `hexo new draft "title"`，文件会放进 `source/_drafts/`，`hexo server --drafts` 能预览，定稿后 `hexo publish "title"` 移到正式目录。
+推送后一分钟左右，Cloudflare 的 Deployments 标签页会出现一条新构建，跑完网站就更新了。中文版和英文版是两个独立的文件，正文用哪种语言都行，界面始终是英文。想先写着不发布，用 `hexo new draft "title"`，文件会放进 `source/_drafts/`，`hexo server --drafts` 能预览，定稿后 `hexo publish "title"` 移到正式目录。
 
 几件事情不用再碰：Cloudflare 后台的构建设置只在命令变化时才需要改；`node_modules` 和 `public` 永远不进仓库；主题升级用 `npm update hexo-theme-next`，你的定制都在 `_config.next.yml` 里，不会被覆盖。换一台电脑只需要 `git clone` 加 `npm install`，全部环境就回来了——这也意味着仓库本身就是备份，不需要另外备份服务器。
 

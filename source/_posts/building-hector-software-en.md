@@ -1,7 +1,6 @@
 ---
 title: "Building hector.software From Scratch: Domain, Cloudflare, Hexo, and Every Pitfall Along the Way"
 date: 2026-09-12 12:00:00
-lang: en
 categories: Meta
 tags:
   - Hexo
@@ -71,7 +70,6 @@ All theme customization goes into a file called `_config.next.yml` at the projec
 scheme: Mist
 creative_commons:
   sidebar: true
-language_switcher: true
 local_search:
   enable: true
 menu:
@@ -81,7 +79,7 @@ menu:
   talks: /talks/ || fa fa-comments
 ```
 
-A few fields in the root `_config.yml` must change: `title` and `author` to your own; `url` to `https://hector.software`, which Hexo uses to build every internal link, the RSS feed, and the sitemap — get it wrong and every link points at `example.com`; and `language`, which I set to `[zh-CN, en]`, marking each post with `lang: zh-CN` or `lang: en` in its front-matter so NexT switches its interface strings (dates, "Read more") to match. This is a lightweight way to do a bilingual site; the trade-off is that the home page lists posts in both languages together. Truly splitting the two languages into separate page trees needs an extra generator plugin, which looked poorly maintained when I checked, so I left it out for now.
+A few fields in the root `_config.yml` must change: `title` and `author` to your own; `url` to `https://hector.software`, which Hexo uses to build every internal link, the RSS feed, and the sitemap — get it wrong and every link points at `example.com`; and `language: en`, so that navigation, dates and labels like "Read more" are all English while individual posts can be written in either language — the same arrangement as the site I was modelling. I first tried `[zh-CN, en]` with a `lang:` tag on every post so the interface would follow each post's language; the result was a site that flipped languages page by page, plus a footer language dropdown that led to 404s, so I settled on an English interface throughout.
 
 Run `hexo server` and open `http://localhost:4000` to see the result locally; edits to config or posts reload automatically.
 
@@ -201,7 +199,7 @@ hexo server                       # local preview at http://localhost:4000
 git add -A && git commit -m "post: my new post" && git push
 ```
 
-About a minute after the push, a new build appears in Cloudflare's Deployments tab, and when it finishes the site is updated. Remember `lang: zh-CN` or `lang: en` in the post's front-matter; the Chinese and English versions of a post are two separate files. To write without publishing, `hexo new draft "title"` puts the file in `source/_drafts/`, `hexo server --drafts` previews it, and `hexo publish "title"` moves it to the posts folder when it's ready.
+About a minute after the push, a new build appears in Cloudflare's Deployments tab, and when it finishes the site is updated. The Chinese and English versions of a post are two separate files; write the body in whichever language you like — the interface stays English. To write without publishing, `hexo new draft "title"` puts the file in `source/_drafts/`, `hexo server --drafts` previews it, and `hexo publish "title"` moves it to the posts folder when it's ready.
 
 A few things you never touch again: the build settings in the Cloudflare dashboard only change if the commands change; `node_modules` and `public` never enter the repository; theme upgrades are `npm update hexo-theme-next`, and your customizations in `_config.next.yml` survive them. On a new machine, `git clone` plus `npm install` restores the whole environment — which also means the repository *is* the backup, and there's no server to back up separately.
 
