@@ -24,8 +24,5 @@
     "hexo-server": "^3.0.0",
     "hexo-theme-landscape": "^1.0.0",
     "hexo-theme-next": "^8.29.0"
-  },
-  "devDependencies": {
-    "wrangler": "^4.131.1"
   }
 }
