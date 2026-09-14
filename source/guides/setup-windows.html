@@ -1,0 +1,988 @@
+<!doctype html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>安装配置教程 · Windows</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;1,6..96,400&family=DM+Sans:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ===== FIXED 16:9 STAGE — MANDATORY BASE ===== */
+/* ===========================================
+   FIXED 16:9 STAGE: MANDATORY BASE STYLES
+   Include this ENTIRE file in every presentation.
+   Slides are authored at 1920×1080 and scaled as a whole.
+   =========================================== */
+
+/* 1. Lock the browser viewport */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+
+/* 2. Full-window deck viewport */
+.deck-viewport {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+
+/* 3. Fixed 16:9 design canvas.
+   JavaScript sets transform: translate(...) scale(...). */
+.deck-stage {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    transform-origin: 0 0;
+    background: var(--slide-bg, #fff);
+}
+
+/* 4. Slides stack inside the fixed stage.
+   Content must be laid out at 1920×1080, not reflowed per device. */
+.slide {
+    position: absolute;
+    inset: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    background: var(--slide-bg, #fff);
+}
+
+.slide.active,
+.slide.visible {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+/* 5. Keep media inside authored slide bounds */
+img,
+video,
+canvas,
+svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* 6. Presentation chrome stays outside the slide design system */
+.deck-controls {
+    position: fixed;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+/* 7. Print one fixed-size slide per page */
+@media print {
+    html,
+    body {
+        width: 1920px;
+        height: auto;
+        overflow: visible;
+        background: #fff;
+    }
+
+    .deck-viewport {
+        position: static;
+        overflow: visible;
+        background: #fff;
+    }
+
+    .deck-stage {
+        position: static;
+        width: auto;
+        height: auto;
+        transform: none !important;
+        background: none;
+    }
+
+    .slide {
+        position: relative;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        width: 1920px;
+        height: 1080px;
+        break-after: page;
+        page-break-after: always;
+    }
+
+    .slide:last-child {
+        break-after: auto;
+        page-break-after: auto;
+    }
+
+    .deck-controls {
+        display: none !important;
+    }
+}
+
+/* 8. Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.2s !important;
+    }
+}
+
+
+/* =====================================================================
+   DESIGN SYSTEM — 「笔记本卡片 / Notebook Tabs」· 教程版
+   深灰台面 + 米白纸卡；右缘六条彩色标签＝六个阶段；左侧活页孔
+   ===================================================================== */
+:root{
+  --stage-bg:#232323; --slide-bg:#232323;
+  --paper:#f8f6f1; --ink:#1a1a1a; --ink2:#4a463d; --ink3:#8a8578;
+  --sig:#b8506a;  --sea:#3f7d68;  --ok:#3f7d68;
+  --line:rgba(26,26,26,.20); --line2:rgba(26,26,26,.10);
+  /* 字体栈：Google Fonts 不可达时（大陆直连）逐级回退到系统字体，
+     结构与配色不受影响，仅字形变化 */
+  --serif:'Noto Serif SC','Songti SC','STSong','Source Han Serif SC','SimSun',serif;
+  --display:'Bodoni Moda','Didot','Times New Roman','Songti SC',serif;
+  --sans:'DM Sans','PingFang SC','Microsoft YaHei','Helvetica Neue',sans-serif;
+  --mono:'JetBrains Mono','SF Mono',Menlo,Consolas,'Courier New',monospace;
+  --t1:#98d4bb; --t2:#c7b8ea; --t3:#f4b8c5; --t4:#a8d8ea; --t5:#ffe6a7; --t6:#e8c9a0;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:var(--serif);-webkit-font-smoothing:antialiased}
+.slide{background:radial-gradient(ellipse at 34% 18%,#3a3a3a 0%,#232323 62%)}
+
+/* --- 纸卡 --- */
+.paper{position:absolute;top:40px;bottom:40px;left:72px;right:126px;background:var(--paper);
+  box-shadow:0 34px 78px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04)}
+.slide.active .paper{animation:rise .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.holes{position:absolute;left:44px;top:0;height:100%;display:flex;flex-direction:column;justify-content:center;gap:118px}
+.holes i{width:22px;height:22px;border-radius:50%;background:#232323;box-shadow:inset 0 2px 4px rgba(0,0,0,.55)}
+.tabs{position:absolute;right:-50px;top:52px;display:flex;flex-direction:column;gap:13px}
+.tab{width:50px;height:136px;border-radius:0 7px 7px 0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-weight:600;font-size:18px;letter-spacing:0;color:#1a1a1a;
+  writing-mode:vertical-rl;box-shadow:3px 3px 0 rgba(0,0,0,.13);opacity:.4;transition:.25s}
+.tab.t1{background:var(--t1)}.tab.t2{background:var(--t2)}.tab.t3{background:var(--t3)}
+.tab.t4{background:var(--t4)}.tab.t5{background:var(--t5)}.tab.t6{background:var(--t6)}
+.tab.on{opacity:1;width:60px}
+
+/* --- 版心 --- */
+.wrap{position:relative;height:100%;padding:56px 76px 58px 112px;display:flex;flex-direction:column}
+.shead{display:flex;align-items:flex-end;gap:20px;margin-bottom:26px;flex-shrink:0}
+.snum{font-family:var(--display);font-weight:700;font-size:58px;line-height:.84;color:var(--sea);letter-spacing:-.02em;flex-shrink:0}
+.stitle{font-weight:900;font-size:46px;line-height:1.1;letter-spacing:0;color:var(--ink);margin:0}
+.skick{font-family:var(--sans);font-size:14px;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--ink3);margin:0 0 9px}
+.shead .ln{flex:1;height:1.5px;background:var(--line);margin-bottom:12px}
+.platbadge{font-family:var(--sans);font-weight:500;font-size:14px;letter-spacing:.16em;color:var(--sig);
+  border:1.5px solid var(--sig);padding:6px 13px;margin-bottom:8px;background:rgba(184,80,106,.06);flex-shrink:0}
+.sbody{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:16px}
+.sbody.top{justify-content:flex-start}
+
+/* --- 步骤 --- */
+.step{display:flex;gap:16px;align-items:flex-start}
+.step .sn{flex-shrink:0;width:38px;height:38px;border-radius:50%;background:var(--sea);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-weight:700;font-size:19px}
+.step .sc{flex:1;min-width:0}
+.step h4{margin:0 0 8px;font-size:27px;font-weight:900;color:var(--ink);letter-spacing:0;line-height:1.3;padding-top:3px}
+.step p{margin:0;font-size:23px;line-height:1.62;color:var(--ink2)}
+
+/* --- 代码块：纸上打字稿 --- */
+.term{background:#edeae1;border-left:4px solid var(--sea);position:relative}
+.termbar{height:30px;background:#e3dfd3;display:flex;align-items:center;padding:0 12px;gap:6px}
+.termbar i{width:8px;height:8px;border-radius:50%;background:#b6b0a1}
+.termbar b{margin-left:7px;font-family:var(--mono);font-size:13px;font-weight:400;color:#8a8578;letter-spacing:.06em}
+.termbody{padding:16px 20px;font-family:var(--mono);font-size:20px;line-height:1.72;color:#33312c;white-space:pre-wrap;word-break:break-word}
+.termbody.sm{font-size:17px;line-height:1.68}
+.termbody.xs{font-size:15px;line-height:1.6}
+.p{color:var(--sig);font-weight:700}.o{color:var(--sea)}.cm{color:#9b9587}
+.copy{position:absolute;top:4px;right:8px;font-family:var(--sans);font-size:12px;letter-spacing:.1em;
+  padding:3px 10px;border:1px solid var(--line);background:#f4f1e8;color:var(--ink3);cursor:pointer;transition:.15s;z-index:2}
+.copy:hover{background:var(--sea);color:#fff;border-color:var(--sea)}
+.copy.done{background:var(--sea);color:#fff;border-color:var(--sea)}
+
+/* --- 卡片 --- */
+.card{background:#fffdf8;border:1.5px solid var(--line);padding:20px 24px}
+.card h4{margin:0 0 9px;font-size:25px;font-weight:900;color:var(--ink);letter-spacing:0;line-height:1.3}
+.card p{margin:0;font-size:22px;line-height:1.62;color:var(--ink2)}
+.card.hot{border-color:var(--sig);background:rgba(184,80,106,.055)}
+.card.ok{border-color:var(--sea);background:rgba(63,125,104,.06)}
+.row{display:flex;gap:16px}.row>*{flex:1;min-width:0}
+
+/* --- 表格 --- */
+.tbl{border:1.5px solid var(--ink);background:#fffdf8;padding:6px 12px 2px}
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--sans);font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);
+  text-align:left;font-weight:500;padding:0 14px 9px;border-bottom:2px solid var(--ink)}
+td{font-size:22px;line-height:1.4;color:var(--ink);padding:11px 14px;border-bottom:1px solid var(--line2);vertical-align:middle}
+td.mono{font-family:var(--mono);font-size:18px;color:var(--sea)}
+td.hot{color:var(--sig);font-weight:600}
+tr:last-child td{border-bottom:none}
+.tbl.sm td{font-size:20px;padding:9px 14px}
+.tbl.xs td{font-size:18px;padding:7px 12px}
+
+.tag{display:inline-block;font-family:var(--mono);font-size:17px;padding:8px 15px;
+  border:1.5px solid var(--line);color:var(--ink2);background:#fffdf8}
+.tag.hot{border-color:var(--sig);color:var(--sig);background:rgba(184,80,106,.07)}
+.lead{font-size:24px;line-height:1.66;color:var(--ink2);margin:0}
+.lead b{color:var(--ink)}
+b.sig{color:var(--sig)}  b.sea{color:var(--sea)}
+code{font-family:var(--mono);font-size:.92em;background:#edeae1;padding:2px 7px;color:#33312c}
+
+.foot{position:absolute;left:112px;bottom:26px;font-family:var(--sans);font-size:14px;letter-spacing:.13em;color:#a8a294}
+.pg{position:absolute;right:76px;bottom:22px;font-family:var(--display);font-weight:700;font-size:24px;color:#b5afa0}
+
+/* --- 封面 --- */
+.cover .wrap{max-width:1020px;justify-content:center}
+.cover h1{margin:0;font-weight:900;font-size:118px;line-height:1.06;letter-spacing:0;color:var(--ink)}
+.cover h1 em{font-family:var(--display);font-style:italic;font-weight:400;font-size:66px;color:var(--sig);display:block;margin-top:10px}
+.cover .rule{width:540px;height:4px;background:var(--ink);margin:32px 0 28px;transform-origin:left}
+.slide.active .cover-rule{animation:grow .7s .6s both}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.cover .sub{margin:0;font-size:27px;line-height:1.65;color:var(--ink2)}
+.cover .strip{display:flex;gap:11px;margin-top:38px}
+
+/* --- 章扉页 --- */
+.divider .wrap{justify-content:center}
+.divider .dnum{font-family:var(--display);font-weight:700;font-size:150px;line-height:.9;color:var(--sea);margin-bottom:10px}
+.divider h2{margin:0;font-size:76px;font-weight:900;color:var(--ink);letter-spacing:0;line-height:1.15}
+.divider .dsub{margin:22px 0 0;font-size:26px;color:var(--ink2);line-height:1.6}
+.divider .drule{width:420px;height:4px;background:var(--ink);margin:28px 0 0}
+
+/* --- 纵向流程图（第 4 页用） --- */
+.stack{display:flex;flex-direction:column;align-items:center;width:100%}
+.layer{width:100%;max-width:820px;padding:18px 30px;border:1.5px solid var(--ink);background:#fffdf8;text-align:center}
+.layer.hl{border-color:var(--sea);border-width:2px;background:rgba(63,125,104,.08)}
+.layer b{display:block;font-size:31px;font-weight:900;color:var(--ink);letter-spacing:0;line-height:1.25}
+.layer.hl b{color:var(--sea)}
+.layer span{display:block;margin-top:5px;font-size:21px;color:var(--ink2);line-height:1.4}
+.down{width:1.5px;height:24px;background:var(--line);position:relative;flex-shrink:0}
+.down::after{content:'';position:absolute;left:-5px;bottom:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--line)}
+
+/* --- 横向闭环（第 8 章用，类名占位以备复用） --- */
+.loop{display:flex;align-items:stretch;width:100%}
+.lstep{flex:1;border:1.5px solid var(--line);background:#fffdf8;padding:18px 14px;text-align:center}
+.lstep.you{border:2px solid var(--sea);background:rgba(63,125,104,.07)}
+
+/* --- 就地编辑 --- */
+body.editing .wrap [contenteditable]:hover{outline:1.5px dashed rgba(184,80,106,.5);outline-offset:4px}
+body.editing .wrap [contenteditable]:focus{outline:2px solid var(--sig);outline-offset:4px;background:rgba(184,80,106,.05)}
+#editbadge{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:1001;display:none;
+  font-family:var(--sans);font-size:13px;letter-spacing:.14em;color:#fff;background:var(--sig);
+  padding:8px 18px;border-radius:999px;box-shadow:0 8px 24px rgba(184,80,106,.4)}
+body.editing #editbadge{display:block}
+@media print{#editbadge{display:none!important}}
+
+/* --- 入场 --- */
+.reveal{opacity:0;transform:translateY(18px)}
+.slide.active .reveal{animation:up .6s cubic-bezier(.2,.8,.2,1) both}
+.slide.active .reveal:nth-child(1){animation-delay:.18s}
+.slide.active .reveal:nth-child(2){animation-delay:.25s}
+.slide.active .reveal:nth-child(3){animation-delay:.32s}
+.slide.active .reveal:nth-child(4){animation-delay:.39s}
+.slide.active .reveal:nth-child(5){animation-delay:.46s}
+.slide.active .reveal:nth-child(6){animation-delay:.53s}
+.slide.active .reveal:nth-child(7){animation-delay:.60s}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* --- 控制条 --- */
+.chrome{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:1000;display:flex;align-items:center;gap:8px;
+  background:rgba(20,20,20,.93);padding:8px 10px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.42)}
+.chrome button{font-family:var(--sans);font-size:13px;letter-spacing:.08em;padding:7px 13px;border-radius:999px;
+  border:1.5px solid rgba(248,246,241,.3);background:rgba(248,246,241,.07);color:#f8f6f1;cursor:pointer;transition:.18s}
+.chrome button:hover{background:rgba(248,246,241,.18)}
+.chrome .count{font-family:var(--display);font-size:15px;color:rgba(248,246,241,.66);padding:0 6px;min-width:62px;text-align:center}
+.chrome .bar{width:150px;height:5px;background:rgba(248,246,241,.16);border-radius:999px;overflow:hidden}
+.chrome .bar i{display:block;height:100%;background:var(--t1);width:0;transition:width .3s}
+@media print{.chrome{display:none!important}}
+
+/* --- 目录浮层 --- */
+#toc{position:fixed;inset:0;z-index:1002;display:none;background:rgba(20,20,20,.93);padding:56px 72px;overflow:auto}
+#toc.on{display:block}
+#toc h3{font-family:var(--sans);font-size:15px;letter-spacing:.3em;text-transform:uppercase;color:#a8a294;margin:0 0 26px}
+#toc ol{list-style:none;margin:0;padding:0;columns:2;column-gap:64px}
+#toc li{font-family:var(--serif);font-size:21px;color:#f8f6f1;padding:9px 14px;cursor:pointer;
+  border-left:3px solid transparent;break-inside:avoid;transition:.15s}
+#toc li:hover{background:rgba(248,246,241,.1);border-left-color:var(--t1)}
+#toc li b{font-family:var(--display);color:#8a8578;margin-right:12px;font-size:18px}
+
+</style></head><body>
+<div class="deck-viewport"><div class="deck-stage">
+<section class="slide active cover">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="reveal" style="display:flex;align-items:center;gap:16px;margin-bottom:32px">
+  <b style="font-family:var(--sans);font-size:15px;letter-spacing:.3em;color:var(--sig)">SETUP GUIDE</b>
+  <span style="flex:1;height:1.5px;background:var(--line);max-width:160px"></span></div>
+<h1 class="reveal">AI 助手<br>安装配置教程<em>for Windows</em></h1>
+<div class="rule cover-rule"></div>
+<p class="sub reveal">Claude Code · Codex · CC Switch · Skills · Stata<br>无需任何计算机基础，跟着做就行</p>
+<div class="strip reveal"><span class="tag">约 2 小时</span><span class="tag">Win 10 / 11</span><span class="tag hot">部署指南</span></div></div>
+    <div class="foot">按 T 打开目录 · ← → 翻页 · 2026</div><div class="pg"></div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1 on">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><div style="flex:1"><p class="skick">BEFORE YOU START</p><h2 class="stitle">阅读前必看</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">四件事，读完再往下。</p><div class="step reveal"><span class="sn">1</span><div class="sc"><h4>别怕"命令行"</h4><p>PowerShell 那个黑框框就是"用打字代替点鼠标"的窗口。输一行、按回车，电脑做一件事。<b class="sea">不会把电脑弄坏。</b></p></div></div><div class="step reveal"><span class="sn">2</span><div class="sc"><h4>命令请复制粘贴</h4><p>代码块右上角都有<b class="sea">「复制」</b>按钮。粘贴到 PowerShell 里<b>点右键</b>即可。</p></div></div><div class="step reveal"><span class="sn">3</span><div class="sc"><h4>看到「用管理员身份打开」就一定要照做</h4><p>否则会报「拒绝访问」。方法：<code>Win + X</code> → 选「终端(管理员)」→ 弹窗点「是」。</p></div></div><div class="step reveal"><span class="sn">4</span><div class="sc"><h4>下一页那三条保命规则，请务必先看</h4><p>Windows 的坑集中在路径和环境变量上，先知道就能躲掉一半问题。</p></div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">02</div>
+  </div>
+</section>
+<section class="slide divider">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1 on">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="reveal"><div class="dnum">00</div><h2>三条保命规则</h2><div class="drule"></div><p class="dsub">Windows 用户栽得最多的地方 —— 先记住这三条</p></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">03</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1 on">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">00</span><div style="flex:1"><p class="skick">GROUND RULES</p><h2 class="stitle">Windows 三条保命规则</h2></div><span class="ln"></span></div><div class="sbody"><div class="step reveal"><span class="sn">1</span><div class="sc"><h4>一切放 C:\work\，不要放桌面</h4><p><code>C:\Users\张三\论文\</code> 这种<b class="sig">带中文或空格</b>的路径会引发一堆莫名其妙的报错。<br><span style="font-size:20px;color:var(--ink3)">如果你的 Windows 用户名本身就是中文，这条尤其重要。</span></p></div></div><div class="step reveal"><span class="sn">2</span><div class="sc"><h4>装完任何东西，关掉窗口重新打开</h4><p>Windows 的命令行<b>只在启动时读一次"程序清单"</b>，不重开就"看不见"新装的东西。<br><span style="font-size:20px;color:var(--ink3)">「明明装了却说找不到」，九成是这个原因。</span></p></div></div><div class="step reveal"><span class="sn">3</span><div class="sc"><h4>curl 要写成 curl.exe</h4><p>PowerShell 里单写 <code>curl</code> 是另一个东西的别名，会报错。</p></div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>先把工作目录建好</b></div><div class="termbody sm">PS&gt; New-Item -ItemType Directory -Force -Path C:\work</div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">04</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1 on">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">00</span><div style="flex:1"><p class="skick">THE MAP</p><h2 class="stitle">这套东西怎么串起来</h2></div><span class="ln"></span></div><div class="sbody" style="flex-direction:row;align-items:center;gap:40px">
+  <div class="stack reveal" style="flex:1.35;display:flex;flex-direction:column;align-items:center">
+    <div class="layer"><b>你</b><span>打字提要求</span></div><div class="down"></div>
+    <div class="layer"><b>Claude Code &nbsp;/&nbsp; Codex</b><span>干活的"助手"——装在命令行里的 AI</span></div><div class="down"></div>
+    <div class="layer hl"><b>CC Switch</b><span>管"用谁家的 AI"，一键切换</span></div><div class="down"></div>
+    <div class="layer"><b>DeepSeek / Anthropic / OpenAI</b><span>真正的"大脑"，在云端</span></div>
+  </div>
+  <div style="flex:.72;display:flex;flex-direction:column;gap:14px"><div class="card ok reveal"><h4>Skills 是什么</h4><p>给 AI 装的<b>《操作手册》</b>。装了"论文润色"技能，你说一句"润色这段"，它自动按学术规范来。</p></div><div class="card hot reveal"><h4>一句话记住整套</h4><p>助手是<b>手机</b>，API Key 是<b>SIM 卡</b>，模型厂商是<b>运营商套餐</b>，CC Switch 是<b>换卡的卡槽</b>。</p></div>
+  </div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">05</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1 on">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">00</span><div style="flex:1"><p class="skick">CHECKLIST</p><h2 class="stitle">安装清单</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">按顺序装，不要跳。<b>前 6 项必装</b>。</p><div class="tbl xs reveal"><table><tr><th style="width:90px">顺序</th><th style="width:300px">装什么</th><th>作用</th><th style="width:130px">能跳过吗</th></tr><tr><td class="">1</td><td class=""><b>Clash Verge</b></td><td class="">科学上网 —— 不解决它后面每步都会失败</td><td class="hot">❌</td></tr><tr><td class="">2</td><td class=""><b>Windows Terminal</b></td><td class="">好用的命令行窗口，中文不乱码</td><td class="">强烈建议</td></tr><tr><td class="">3</td><td class=""><b>Git for Windows</b></td><td class="">下载代码 + <b>Claude Code 依赖它提供的运行环境</b></td><td class="hot">❌</td></tr><tr><td class="">4</td><td class=""><b>Node.js</b></td><td class="">AI 助手运行的底座</td><td class="hot">❌</td></tr><tr><td class="">5</td><td class=""><b>Claude Code</b></td><td class="">AI 助手（Anthropic 家）</td><td class="hot">❌</td></tr><tr><td class="">6</td><td class=""><b>Codex</b></td><td class="">AI 助手（OpenAI 家），跑 Stata 主要用它</td><td class="">建议装</td></tr><tr><td class="">7</td><td class=""><b>CC Switch</b></td><td class="">一键切换用哪家大模型，省钱关键</td><td class="">建议装</td></tr><tr><td class="">8</td><td class=""><b>Skills + Stata 联动</b></td><td class="">技能包；让 AI 帮你跑回归</td><td class="">✅</td></tr></table></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">06</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1 on">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">01</span><div style="flex:1"><p class="skick">POWERSHELL</p><h2 class="stitle">打开 PowerShell</h2></div><span class="ln"></span></div><div class="sbody"><div class="tbl sm reveal"><table><tr><th style="width:340px">场景</th><th>怎么打开</th></tr><tr><td class=""><b>普通操作</b></td><td class="">按 <code>Win + X</code> → 选「终端」或「Windows PowerShell」</td></tr><tr><td class="hot"><b class="sig">需要管理员权限</b></td><td class="">按 <code>Win + X</code> → 选「<b>终端(管理员)</b>」→ 弹窗点「是」</td></tr></table></div><div class="card  reveal"><h4>怎么确认是管理员模式</h4><p>看窗口标题栏，带「管理员」三个字就对了。</p></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>Windows PowerShell</b></div><div class="termbody sm">PS&gt; whoami
+<span class="o">desktop-abc\hector</span>   <span class="cm"># 打印出用户名＝正常</span></div></div><div class="step reveal"><span class="sn">1</span><div class="sc"><h4>顺手装 Windows Terminal</h4><p>自带的 PowerShell 窗口对中文支持不好会乱码，换这个体验好很多。Win11 自带，Win10 需要装：</p></div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>管理员 PowerShell</b></div><div class="termbody sm">PS&gt; winget install Microsoft.WindowsTerminal</div></div><div class="card  reveal"><h4>winget 是什么？</h4><p>Windows 官方的"命令行软件商店"，Win10 1809+ 和 Win11 自带。提示找不到就去 Microsoft Store 搜「应用安装程序」。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">07</div>
+  </div>
+</section>
+<section class="slide divider">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1 on">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="reveal"><div class="dnum">02</div><h2>科学上网</h2><div class="drule"></div><p class="dsub">绝大多数安装失败的根本原因，必须最先解决</p></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">08</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1 on">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">02</span><div style="flex:1"><p class="skick">WHY FIRST</p><h2 class="stitle">为什么必须先做这一步</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">Claude Code、Codex 的服务器都在<b>国外</b>。不解决网络，后面每一步都会卡在"下载失败""连接超时"。</p><div class="row reveal"><div class="card hot reveal"><h4>❌ 没搞定网络会怎样</h4><p><code>npm ERR! network ETIMEDOUT</code><br>装什么都失败，而且报错看不懂。</p></div><div class="card ok reveal"><h4>✅ 搞定之后</h4><p>后面每一步基本都是复制粘贴，顺畅跑完。</p></div></div><div class="card  reveal"><h4>前提：你需要一个机场订阅链接</h4><p>本教程不展开这部分，请找同学要或自行购买。<b class="sig">但这是整套工具的前提。</b></p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">09</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1 on">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">02</span><div style="flex:1"><p class="skick">INSTALL</p><h2 class="stitle">下载安装 Clash Verge</h2></div><span class="ln"></span></div><div class="sbody"><div class="step reveal"><span class="sn">1</span><div class="sc"><h4>下载</h4><p>访问 <code>github.com/clash-verge-rev/clash-verge-rev/releases</code>，在最新版的 Assets 里找文件名带 <b class="sea">x64-setup.exe</b> 的（绝大多数电脑都是 x64）。</p></div></div><div class="card  reveal"><h4>不确定？</h4><p>右键「此电脑」→「属性」→ 看「系统类型」。ARM 架构（少见）选带 <code>arm64</code> 的。</p></div><div class="step reveal"><span class="sn">2</span><div class="sc"><h4>安装</h4><p>双击 .exe → 一路「下一步」。</p></div></div><div class="card hot reveal"><h4>弹「Windows 已保护你的电脑」</h4><p>点<b class="sea">「更多信息」→「仍要运行」</b>。这是 SmartScreen 对未签名安装包的常规拦截。</p></div><div class="step reveal"><span class="sn">3</span><div class="sc"><h4>导入订阅</h4><p>打开 Clash Verge → 左侧「订阅」→ 顶部输入框粘贴订阅链接 → 点「导入」。</p></div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">10</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1 on">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">02</span><div style="flex:1"><p class="skick">CONFIGURE</p><h2 class="stitle">开三个开关，然后验证</h2></div><span class="ln"></span></div><div class="sbody"><div class="tbl sm reveal"><table><tr><th style="width:290px">在哪里</th><th>打开什么</th><th>作用</th></tr><tr><td class="">左侧「设置」</td><td class=""><b>系统代理</b></td><td class="">让浏览器等应用走代理</td></tr><tr><td class="">同一页面</td><td class="hot"><b class="sig">Tun 模式</b></td><td class=""><b>最关键</b> —— 让命令行也走代理</td></tr><tr><td class="">左侧「代理」</td><td class="">选一个延迟低的节点</td><td class="">实际的线路</td></tr></table></div><div class="card  reveal"><h4>首次开 Tun 模式会要求装虚拟网卡驱动</h4><p>点「是」允许即可。</p></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>验证（注意是 curl.exe）</b></div><div class="termbody sm">PS&gt; curl.exe -I https://www.google.com</div></div><div class="row reveal"><div class="card ok reveal"><h4>✅ 看到 HTTP/2 200</h4><p>网络通了，继续下一章。</p></div><div class="card hot reveal"><h4>❌ 卡住或报错</h4><p>回去检查三个开关，或换个节点。<b class="sig">往后保持 Clash Verge 开着。</b></p></div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">11</div>
+  </div>
+</section>
+<section class="slide divider">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2 on">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="reveal"><div class="dnum">03</div><h2>装基础工具</h2><div class="drule"></div><p class="dsub">Git、Node.js —— 两个底座</p></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">12</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2 on">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">03</span><div style="flex:1"><p class="skick">GIT</p><h2 class="stitle">装 Git for Windows</h2></div><span class="ln"></span></div><div class="sbody"><div class="card hot reveal"><h4>⚠ 这一步 Windows 用户不能跳过</h4><p>两个原因：① 下载代码需要它　② <b class="sig">Claude Code 在 Windows 上依赖它提供的运行环境</b>（Mac 自带，Windows 没有）。不装的话很多功能用不了。</p></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>管理员 PowerShell</b></div><div class="termbody sm">PS&gt; winget install --id Git.Git -e --source winget</div></div><div class="card  reveal"><h4>或者官网下载</h4><p>访问 <code>git-scm.com/download/win</code> 下载 64-bit 安装包。安装向导选项很多，<b>全部保持默认，一路下一步</b>即可。</p></div><div class="step reveal"><span class="sn">1</span><div class="sc"><h4>装完关掉 PowerShell 重新打开，然后验证</h4></div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>验证</b></div><div class="termbody sm">PS&gt; git --version
+<span class="o">git version 2.50.1</span></div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">13</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2 on">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">03</span><div style="flex:1"><p class="skick">NODE</p><h2 class="stitle">装 Node.js</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">Claude Code 和 Codex 都是 Node.js 写的，没它跑不起来。</p><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>管理员 PowerShell</b></div><div class="termbody sm">PS&gt; winget install OpenJS.NodeJS.LTS</div></div><div class="card  reveal"><h4>或者官网下载</h4><p>访问 <code>nodejs.org</code> 下载 <b>LTS 版本</b>（左边绿色按钮）→ 双击 .msi → 一路下一步。</p></div><div class="card hot reveal"><h4>⚠ 中途问你要不要装 Tools for Native Modules</h4><p><b>不要勾</b>。会额外下载几个 G，你用不到。</p></div><div class="step reveal"><span class="sn">1</span><div class="sc"><h4>关掉 PowerShell 重新打开，再验证</h4></div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>验证 + 换国内源</b></div><div class="termbody sm">PS&gt; node --version    <span class="cm"># 要求 v18 以上</span>
+PS&gt; npm --version
+PS&gt; npm config set registry https://registry.npmmirror.com</div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">14</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2 on">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">03</span><div style="flex:1"><p class="skick">CHECKPOINT</p><h2 class="stitle">阶段检查 ①</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">复制整段粘进 PowerShell，一次性检查三个前置工具。</p><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>Windows PowerShell</b></div><div class="termbody sm">PS&gt; foreach ($c in @('git','node','npm')) {
+      if (Get-Command $c -EA SilentlyContinue) {
+        "{0,-6} {1}" -f $c, (&amp; $c --version 2&gt;&amp;1 | Select-Object -First 1)
+      } else { "{0,-6} ❌ 未安装" -f $c }
+    }</div></div><div class="row reveal"><div class="card ok reveal"><h4>✅ 三行都有版本号</h4><p>前置工作完成，进入正题。</p></div><div class="card hot reveal"><h4>❌ 哪行显示"未安装"</h4><p>先<b class="sig">关掉窗口重新打开</b>再跑一次 —— 十有八九就好了。还不行再重装那一个。</p></div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">15</div>
+  </div>
+</section>
+<section class="slide divider">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2 on">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="reveal"><div class="dnum">04</div><h2>安装 Claude Code</h2><div class="drule"></div><p class="dsub">Anthropic 官方的 AI 编程助手</p></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">16</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2 on">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">04</span><div style="flex:1"><p class="skick">INSTALL</p><h2 class="stitle">两种装法，A 失败再用 B</h2></div><span class="ln"></span></div><div class="sbody"><div class="step reveal"><span class="sn">A</span><div class="sc"><h4>官方安装脚本（推荐）</h4></div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>方案 A</b></div><div class="termbody sm">PS&gt; irm https://claude.ai/install.ps1 | iex</div></div><div class="card hot reveal"><h4>如果报「禁止运行脚本」</h4><p>先执行下面这行，问你确认时输 <code>Y</code> 回车，再重试。这<b>只影响你的用户</b>，不降低系统整体安全。</p></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>放开脚本执行策略</b></div><div class="termbody sm">PS&gt; Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</div></div><div class="step reveal"><span class="sn">B</span><div class="sc"><h4>用 npm 装（方案 A 失败时）</h4></div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>方案 B</b></div><div class="termbody sm">PS&gt; npm install -g @anthropic-ai/claude-code</div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>关窗口重开后验证</b></div><div class="termbody sm">PS&gt; claude --version
+<span class="o">2.1.266 (Claude Code)</span></div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">17</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2 on">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">04</span><div style="flex:1"><p class="skick">FIRST RUN</p><h2 class="stitle">第一次启动</h2></div><span class="ln"></span></div><div class="sbody"><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>Windows PowerShell</b></div><div class="termbody sm">PS&gt; cd C:\work
+PS&gt; claude</div></div><p class="lead reveal">首次运行会问你三个问题：</p><div class="tbl sm reveal"><table><tr><th style="width:280px">问什么</th><th>怎么选</th></tr><tr><td class="">选主题</td><td class="">随便选，之后能改</td></tr><tr><td class="">登录方式</td><td class="">有 Claude 官方订阅选 <code>Claude account</code>；<b class="sig">没有的话先随便过</b>，第 6 章用 CC Switch 配国产模型</td></tr><tr><td class="">信任文件夹</td><td class="">选 <code>Yes, proceed</code></td></tr></table></div><div class="row reveal"><div class="card ok reveal"><h4>进去后试一句</h4><p>输入 <code>你好，你能做什么？</code> 回车。有回复就说明一切正常。</p></div><div class="card  reveal"><h4>退出</h4><p>输 <code>/exit</code>，或按两次 <code>Ctrl + C</code>。</p></div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">18</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2 on">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">04</span><div style="flex:1"><p class="skick">COMMANDS</p><h2 class="stitle">Claude Code 常用命令</h2></div><span class="ln"></span></div><div class="sbody"><div class="tbl sm reveal"><table><tr><th style="width:300px">命令</th><th>作用</th><th style="width:420px">什么时候用</th></tr><tr><td class="mono"><code>claude</code></td><td class="">在当前文件夹启动</td><td class="">每次开工</td></tr><tr><td class="mono"><code>/help</code></td><td class="">查看所有命令</td><td class="">忘了有什么功能时</td></tr><tr><td class="mono"><code>/model</code></td><td class="">切换模型</td><td class="">想换个模型试试</td></tr><tr><td class="mono"><code>/clear</code></td><td class="">清空当前对话</td><td class=""><b class="sig">聊久了变慢、答非所问时</b></td></tr><tr><td class="mono"><code>/exit</code></td><td class="">退出</td><td class="">收工，或需要重启生效时</td></tr></table></div><div class="card ok reveal"><h4>💡 /clear 是最实用的一个</h4><p>AI 的"记忆"有上限，聊太久会塞满导致变慢、跑题。换个新话题时先 <code>/clear</code>，效果立刻回来。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">19</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2 on">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">05</span><div style="flex:1"><p class="skick">CODEX</p><h2 class="stitle">安装 Codex</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">Codex 是 OpenAI 的 AI 助手。<b>和 Claude Code 功能重合度高</b>，但第 8 章的 Stata 联动主要用它，建议装。</p><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>安装</b></div><div class="termbody sm">PS&gt; npm install -g @openai/codex</div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>关窗口重开后验证</b></div><div class="termbody sm">PS&gt; codex --version
+<span class="o">codex-cli 0.134.0</span></div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>首次启动</b></div><div class="termbody sm">PS&gt; cd C:\work
+PS&gt; codex</div></div><div class="card ok reveal"><h4>为什么两个都装？</h4><p>一家额度用完、或某家模型当天不稳定时，能立刻切到另一家，工作不中断。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">20</div>
+  </div>
+</section>
+<section class="slide divider">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3 on">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="reveal"><div class="dnum">06</div><h2>CC Switch</h2><div class="drule"></div><p class="dsub">本教程最重要的一章 —— 读懂比喻就懂了整套逻辑</p></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">21</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3 on">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">06</span><div style="flex:1"><p class="skick">THE METAPHOR</p><h2 class="stitle">先用一个比喻讲清楚</h2></div><span class="ln"></span></div><div class="sbody" style="flex-direction:row;gap:34px;align-items:center">
+  <div style="flex:1.15;display:flex;flex-direction:column;gap:14px">
+    <div class="reveal" style="border-left:4px solid var(--sea);padding-left:24px">
+      <p class="lead" style="font-size:26px"><b>Claude Code 和 Codex，就像两部不同品牌的手机。</b><br>
+      一部 iPhone 一部安卓，操作习惯不同，但本质都是"能上网的设备"。</p></div>
+    <div class="reveal" style="border-left:4px solid var(--sig);padding-left:24px">
+      <p class="lead" style="font-size:26px"><b>但光有手机打不了电话</b>——还需要一张 SIM 卡和一个运营商套餐。</p></div>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:13px"><div class="tbl sm reveal"><table><tr><th style="width:200px">比喻</th><th>实际是什么</th></tr><tr><td class=""><b>手机</b></td><td class="">Claude Code / Codex</td></tr><tr><td class="hot"><b class="sig">SIM 卡</b></td><td class=""><b>API Key</b> —— 一串 sk- 开头的字符</td></tr><tr><td class=""><b>运营商套餐</b></td><td class="">大模型厂商：DeepSeek、Anthropic…</td></tr><tr><td class=""><b class="sea">卡槽管理器</b></td><td class=""><b>CC Switch</b> —— 插多张卡、一键切换</td></tr></table></div><div class="card hot reveal"><h4>同一张卡可以插进不同的手机</h4><p>但<b class="sig">信号制式不一样</b> —— 这就是下面最容易填错的地方。</p></div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">22</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3 on">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">06</span><div style="flex:1"><p class="skick">WHY</p><h2 class="stitle">为什么你特别需要它</h2></div><span class="ln"></span></div><div class="sbody"><div class="step reveal"><span class="sn">1</span><div class="sc"><h4>官方渠道对大陆不友好</h4><p>Anthropic 和 OpenAI <b class="sig">都不支持大陆支付</b>，直接订阅门槛很高。</p></div></div><div class="step reveal"><span class="sn">2</span><div class="sc"><h4>国产模型便宜太多</h4><p>DeepSeek 的价格常常是官方的<b class="sea">几十分之一</b>，对学生党差别巨大。</p></div></div><div class="step reveal"><span class="sn">3</span><div class="sc"><h4>额度用完要能立刻切</h4><p>不然写论文写到一半直接中断。CC Switch 切换只要三秒。</p></div></div><div class="card hot reveal"><h4>没有 CC Switch 会怎样？</h4><p>得手动改配置文件 —— 找到隐藏目录、编辑 JSON、写错一个逗号就全线崩溃。有了它就是界面上点一下。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">23</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3 on">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">06</span><div style="flex:1"><p class="skick">INSTALL</p><h2 class="stitle">安装 CC Switch</h2></div><span class="ln"></span></div><div class="sbody"><div class="step reveal"><span class="sn">1</span><div class="sc"><h4>下载</h4><p>访问 <code>github.com/farion1231/cc-switch/releases</code>，在最新版 Assets 里找带 <b class="sea">_x64-setup.exe</b> 的。</p></div></div><div class="step reveal"><span class="sn">2</span><div class="sc"><h4>安装</h4><p>双击 → SmartScreen 拦截的话点「更多信息」→「仍要运行」→ 一路下一步。</p></div></div><div class="step reveal"><span class="sn">3</span><div class="sc"><h4>基础设置</h4><p>打开后进「设置」→ 语言选<b>简体中文</b> → 打开<b>开机自启</b>和<b>最小化到托盘</b>。</p></div></div><div class="card ok reveal"><h4>💡 找不到窗口了？</h4><p>看屏幕<b>右下角任务栏</b>，可能需要点那个 <code>^</code> 展开隐藏图标。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">24</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3 on">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">06</span><div style="flex:1"><p class="skick">STEP 1 / 4</p><h2 class="stitle">拿到你的"SIM 卡"</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">用最便宜又好用的 <b>DeepSeek</b> 演示完整流程。</p><div class="step reveal"><span class="sn">1</span><div class="sc"><h4>注册</h4><p>浏览器打开 <code>platform.deepseek.com</code>，手机号注册，<b class="sea">不需要翻墙</b>。</p></div></div><div class="step reveal"><span class="sn">2</span><div class="sc"><h4>充值</h4><p>左侧「充值」→ 充 <b>10 块钱</b>。DeepSeek 非常便宜，够新手用很久。</p></div></div><div class="step reveal"><span class="sn">3</span><div class="sc"><h4>创建 Key</h4><p>左侧「API Keys」→「创建 API Key」→ 起个名字，比如 <code>my-claude-code</code>。</p></div></div><div class="row reveal"><div class="card hot reveal"><h4>⚠ 只显示一次</h4><p>关掉页面就<b>再也看不到</b>。立刻复制那串 <code>sk-</code> 开头的字符存到记事本，忘了只能删掉重建。</p></div><div class="card hot reveal"><h4>⚠ Key 等同于你的钱包</h4><p>绝对不要发群里、不要传 GitHub。</p></div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">25</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3 on">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">06</span><div style="flex:1"><p class="skick">STEP 2 / 4</p><h2 class="stitle">把"卡"插进 Claude Code</h2></div><span class="ln"></span></div><div class="sbody"><div class="step reveal"><span class="sn">1</span><div class="sc"><h4>打开 CC Switch，顶部标签选 <b>Claude</b>，点「+ 添加供应商」</h4></div></div><div class="tbl sm reveal"><table><tr><th style="width:300px">字段</th><th>填什么</th></tr><tr><td class="">名称</td><td class=""><code>DeepSeek</code>（随便起，自己看得懂就行）</td></tr><tr><td class="">Base URL / 接口地址</td><td class="hot"><code>https://api.deepseek.com<b>/anthropic</b></code></td></tr><tr><td class="">API Key</td><td class="">粘贴刚才复制的 <code>sk-...</code></td></tr><tr><td class="">模型 / Model</td><td class=""><code>deepseek-chat</code></td></tr></table></div><div class="step reveal"><span class="sn">2</span><div class="sc"><h4>保存 → 在列表里找到它 → 点「启用」</h4></div></div><div class="card hot reveal"><h4>📌 注意那个 /anthropic 后缀</h4><p>这是 DeepSeek 专门提供的"伪装成 Anthropic 格式"的接口，能让 Claude Code 以为自己在跟官方说话。<b class="sig">少写了就连不上。</b></p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">26</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3 on">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">06</span><div style="flex:1"><p class="skick">STEP 3 / 4</p><h2 class="stitle">验证，然后配 Codex</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal"><b>完全退出 Claude Code</b>（输 <code>/exit</code>，或直接关掉整个 PowerShell 窗口），再重新打开：</p><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>Windows PowerShell</b></div><div class="termbody sm">PS&gt; cd C:\work
+PS&gt; claude
+<span class="cm">> 你好，请说明你是哪个模型</span></div></div><p class="lead reveal">正常回复 → 🎉 接入成功。接着在 CC Switch 顶部切到 <b>Codex</b> 标签，同样「+ 添加供应商」：</p><div class="tbl sm reveal"><table><tr><th style="width:300px">字段</th><th>填什么</th></tr><tr><td class="">Base URL</td><td class="hot"><code>https://api.deepseek.com<b>/v1</b></code></td></tr><tr><td class="">API Key</td><td class="">同一串 <code>sk-...</code></td></tr><tr><td class="">模型</td><td class=""><code>deepseek-chat</code></td></tr></table></div><div class="card hot reveal"><h4>📌 Codex 这边后缀是 /v1，不是 /anthropic</h4><p>Claude Code 说 Anthropic 的"方言"，Codex 说 OpenAI 的 —— <b>同一张卡插不同手机，信号制式不一样。</b></p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">27</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3 on">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">06</span><div style="flex:1"><p class="skick">STEP 4 / 4</p><h2 class="stitle">日常怎么用</h2></div><span class="ln"></span></div><div class="sbody"><div class="reveal" style="display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:22px">
+  <div class="card" style="text-align:center;padding:18px 22px"><p style="font-size:21px">模型变慢<br>额度用完<br>想省钱</p></div>
+  <span style="font-size:30px;color:var(--line)">→</span>
+  <div class="card" style="text-align:center;padding:18px 22px"><p style="font-size:21px">点右下角任务栏的<br><b>CC Switch</b> 图标</p></div>
+  <span style="font-size:30px;color:var(--line)">→</span>
+  <div class="card" style="text-align:center;padding:18px 22px"><p style="font-size:21px">选另一个供应商<br>点<b>「启用」</b></p></div>
+  <span style="font-size:30px;color:var(--line)">→</span>
+  <div class="card hot" style="text-align:center;padding:18px 22px"><p style="font-size:21px"><b class="sig">重启</b><br>claude 或 codex</p></div>
+</div><div class="row reveal"><div class="card ok reveal"><h4>建议至少配两个供应商</h4><p>主力 <b>DeepSeek</b>（便宜），备用<b>官方</b>（复杂任务效果好）。</p></div><div class="card hot reveal"><h4>⚠ 切换后必须重启</h4><p>运行中的会话里切是<b>不生效</b>的。必须完全退出再重开。</p></div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">28</div>
+  </div>
+</section>
+<section class="slide divider">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4 on">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="reveal"><div class="dnum">07</div><h2>安装 Skills</h2><div class="drule"></div><p class="dsub">给 AI 装上专业技能包</p></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">29</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4 on">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">07</span><div style="flex:1"><p class="skick">WHAT ARE SKILLS</p><h2 class="stitle">Skills 是什么</h2></div><span class="ln"></span></div><div class="sbody"><div class="reveal" style="border-left:4px solid var(--sea);padding-left:26px;margin-bottom:22px">
+  <p class="lead" style="font-size:27px"><b>AI 本身是个聪明但没经验的新员工，Skills 就是你交给他的《操作手册》。</b></p></div><div class="row reveal"><div class="card hot reveal"><h4>❌ 没有手册</h4><p>你每次都得从头交代："帮我润色论文，用学术语气，别用第一人称，参考文献按 APA 格式，图表标题要……"</p></div><div class="card ok reveal"><h4>✅ 有手册</h4><p>你只说<b>"润色这段"</b>，他自己翻手册照做。</p></div></div><div class="card  reveal"><h4>技术上就是一个个文件夹</h4><p>放进指定位置，AI 启动时自动加载。<b class="sea">不需要写代码，复制粘贴即可。</b></p></div><div class="card ok reveal"><h4>本章装三类</h4><p>① Claude Code 插件（论文全流程）　② 个人技能（写作 / 英语）　③ Codex 的 Nature Skills（14 个科研技能）</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">30</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4 on">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">07</span><div style="flex:1"><p class="skick">PLUGINS</p><h2 class="stitle">装 Claude Code 插件</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">在 Claude Code <b>里面</b>输入，不是在 PowerShell。逐条输，每条等它跑完。</p><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>先启动</b></div><div class="termbody sm">PS&gt; cd C:\work
+PS&gt; claude</div></div><div class="step reveal"><span class="sn">1</span><div class="sc"><h4>添加插件市场（相当于添加应用商店地址）</h4></div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>在 Claude Code 里输入</b></div><div class="termbody sm">/plugin marketplace add Imbad0202/academic-research-skills
+/plugin marketplace add https://github.com/zarazhangrui/frontend-slides.git
+/plugin marketplace add jarrodwatts/claude-hud</div></div><div class="step reveal"><span class="sn">2</span><div class="sc"><h4>安装三个插件</h4></div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>在 Claude Code 里输入</b></div><div class="termbody sm">/plugin install academic-research-skills@academic-research-skills
+/plugin install frontend-slides@frontend-slides
+/plugin install claude-hud@claude-hud</div></div><div class="card ok reveal"><h4>不想打命令？</h4><p>输 <code>/plugin</code> 回车会出图形菜单，方向键选「Browse marketplaces」按提示操作。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">31</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4 on">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">07</span><div style="flex:1"><p class="skick">PLUGINS</p><h2 class="stitle">这三个插件是干嘛的</h2></div><span class="ln"></span></div><div class="sbody"><div class="tbl sm reveal"><table><tr><th style="width:400px">插件</th><th>作用</th></tr><tr><td class="hot"><b>academic-research-skills</b></td><td class=""><b>主力</b>。覆盖毕业论文从选题到定稿的全流程，16 个命令</td></tr><tr><td class=""><b>frontend-slides</b></td><td class="">做带动画的网页版 PPT，答辩用；也能把 PPTX 转成网页</td></tr><tr><td class=""><b>claude-hud</b></td><td class="">美化状态栏，实时显示用了多少额度、花了多少钱</td></tr></table></div><div class="step reveal"><span class="sn">3</span><div class="sc"><h4>重启验证</h4><p>输 <code>/exit</code> 退出，重新 <code>claude</code> 进入，然后输入 <code>/</code> —— 应该能看到一串 <code>/ars-</code> 开头的命令。</p></div></div><div class="card ok reveal"><h4>✅ 看到 /ars- 开头的一堆命令就成功了</h4><p>下一页是这些命令的完整清单。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">32</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4 on">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">07</span><div style="flex:1"><p class="skick">COMMANDS</p><h2 class="stitle">论文全流程：16 个命令</h2></div><span class="ln"></span></div><div class="sbody"><div class="tbl xs reveal"><table><tr><th style="width:310px">命令</th><th>什么时候用</th></tr><tr><td class="mono"><code>/ars-plan</code></td><td class="">不知道从哪下手时，它一章一章引导你规划</td></tr><tr><td class="mono"><code>/ars-outline</code></td><td class="">生成详细大纲 + 每部分该用什么证据　<b class="sea">← 新手从这个开始</b></td></tr><tr><td class="mono"><code>/ars-3w</code></td><td class="">快速扫一篇论文的 WHY/HOW/WHAT　<b class="sea">← 读文献神器</b></td></tr><tr><td class="mono"><code>/ars-lit-review</code></td><td class="">写文献综述（带注释的参考文献）</td></tr><tr><td class="mono"><code>/ars-abstract</code></td><td class="">生成中英双语摘要 + 关键词</td></tr><tr><td class="mono"><code>/ars-reviewer</code></td><td class=""><b>模拟 5 个审稿人</b>给你挑刺，交稿前自查</td></tr><tr><td class="mono"><code>/ars-revision</code></td><td class="">根据意见出修改稿 + 审稿回复</td></tr><tr><td class="mono"><code>/ars-revision-coach</code></td><td class="">把审稿意见拆成修改清单 + 回复信框架</td></tr><tr><td class="mono"><code>/ars-citation-check</code></td><td class="">查引用有没有错</td></tr><tr><td class="mono"><code>/ars-format-convert</code></td><td class="">Word / PDF / LaTeX / Markdown 互转</td></tr><tr><td class="mono"><code>/ars-disclosure</code></td><td class="">生成 AI 使用声明（<b class="sig">现在很多学校要求</b>）</td></tr><tr><td class="mono"><code>/ars-full</code></td><td class="">全流程一条龙　<b class="sig">消耗大，先用便宜模型试</b></td></tr></table></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">33</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4 on">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">07</span><div style="flex:1"><p class="skick">PERSONAL</p><h2 class="stitle">装个人技能</h2></div><span class="ln"></span></div><div class="sbody"><div class="tbl sm reveal"><table><tr><th style="width:360px">技能</th><th>作用</th></tr><tr><td class="mono"><code>academic-writing-style</code></td><td class="">中英文作业/报告写作，<b>规避"一眼 AI"的腔调</b></td></tr><tr><td class="mono"><code>english-immersion</code></td><td class="">英语沉浸对话搭子 —— 不当老师、不纠语法，陪你正常聊天练口语</td></tr></table></div><p class="lead reveal">技能就是一个个文件夹。把别人分享的技能包解压，或自己新建一个，放进下面这个目录：</p><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>Windows PowerShell</b></div><div class="termbody sm">PS&gt; New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills"</div></div><div class="card ok reveal"><h4>然后在文件资源管理器地址栏粘贴这个直达</h4><p><code>%USERPROFILE%\.claude\skills</code> —— 把解压出来的技能文件夹直接拖进去。<br>以点开头的文件夹默认隐藏：「查看」→ 勾「隐藏的项目」。</p></div><div class="card hot reveal"><h4>📌 结构必须是 技能名\SKILL.md，文件名大写</h4><p>⚠ 用记事本编辑时<b class="sig">保存编码必须选 UTF-8</b>，否则中文乱码。推荐用 VS Code。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">34</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4 on">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">07</span><div style="flex:1"><p class="skick">NATURE SKILLS</p><h2 class="stitle">装 Codex 的 14 个科研技能</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">这套叫 <b>Nature Skills</b>，专为写论文设计，装到 Codex 里。</p><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>下载</b></div><div class="termbody sm">PS&gt; cd C:\work
+PS&gt; git clone https://github.com/Yuan1z0825/nature-skills.git</div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>复制到 Codex 技能目录</b></div><div class="termbody sm">PS&gt; New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.codex\skills"
+PS&gt; Copy-Item -Recurse -Force "C:\work\nature-skills\skills\*" "$env:USERPROFILE\.codex\skills\"</div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>验证</b></div><div class="termbody sm">PS&gt; dir "$env:USERPROFILE\.codex\skills"
+<span class="o">_shared  nature-reader  nature-writing  ...</span></div></div><div class="card ok reveal"><h4>💡 装了 Git for Windows 的话也可以跑官方脚本</h4><p>开始菜单搜「Git Bash」→ 打开 → <code>cd ~/work/nature-skills &amp;&amp; ./scripts/update-codex-skills.sh</code></p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">35</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4 on">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">07</span><div style="flex:1"><p class="skick">NATURE SKILLS</p><h2 class="stitle">这 14 个技能能干什么</h2></div><span class="ln"></span></div><div class="sbody"><div class="tbl xs reveal"><table><tr><th style="width:300px">技能</th><th style="width:340px">作用</th><th style="width:300px">技能</th><th>作用</th></tr><tr><td class="mono"><code>nature-reader</code></td><td class=""><b>论文中英对照精读</b>，带图表</td><td class="mono"><code>nature-reviewer</code></td><td class="">模拟审稿给意见</td></tr><tr><td class="mono"><code>nature-writing</code></td><td class="">写论文各章节</td><td class="mono"><code>nature-response</code></td><td class="">写审稿回复信</td></tr><tr><td class="mono"><code>nature-polishing</code></td><td class="">英文润色</td><td class="mono"><code>nature-paper2ppt</code></td><td class=""><b>论文一键转 PPT</b></td></tr><tr><td class="mono"><code>nature-academic-search</code></td><td class="">检索文献</td><td class="mono"><code>nature-citation</code></td><td class="">引用管理与校验</td></tr><tr><td class="mono"><code>nature-downloader</code></td><td class="">用学校图书馆权限批量下载</td><td class="mono"><code>nature-figure</code></td><td class="">论文配图</td></tr><tr><td class="mono"><code>nature-literature-pipeline</code></td><td class="">批量处理文献</td><td class="mono"><code>nature-data</code></td><td class="">数据处理</td></tr><tr><td class="mono"><code>nature-proposal-writer</code></td><td class="">写项目申请书</td><td class="mono"><code>nature-paper-to-patent</code></td><td class="">论文转专利</td></tr></table></div><div class="card ok reveal"><h4>怎么用：不需要记名字，直接说人话</h4><p>「帮我把这篇 PDF 做成中英对照的精读笔记」→ 自动用 nature-reader。每个技能里写好了触发条件，AI 自己判断。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">36</div>
+  </div>
+</section>
+<section class="slide divider">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5 on">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="reveal"><div class="dnum">08</div><h2>让 AI 帮你跑 Stata</h2><div class="drule"></div><p class="dsub">这一章是给国际贸易专业单独写的</p></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">37</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5 on">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">08</span><div style="flex:1"><p class="skick">HOW IT WORKS</p><h2 class="stitle">原理：AI 不替你点鼠标</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">先纠正一个常见误解：AI <b class="sig">不会</b>去操作 Stata 的图形界面帮你点菜单。它做的是另一件更高效的事——</p><div class="reveal" style="display:flex;width:100%;margin-bottom:20px"><div style="flex:1;border:2px solid var(--sea);
+        background:rgba(63,125,104,.07);padding:18px 14px;text-align:center">
+        <span style="display:block;font-family:var(--display);font-weight:700;font-size:26px;color:var(--sea);margin-bottom:7px">01</span>
+        <span style="display:block;font-size:22px;font-weight:600">你说人话</span>
+        <span style="display:block;font-size:17px;color:var(--ink3);margin-top:6px">"帮我跑个引力模型"</span></div><div style="width:28px;display:flex;align-items:center;justify-content:center;color:var(--line);font-size:22px">→</div><div style="flex:1;border:1.5px solid var(--line);
+        background:#fffdf8;padding:18px 14px;text-align:center">
+        <span style="display:block;font-family:var(--display);font-weight:700;font-size:26px;color:var(--sea);margin-bottom:7px">02</span>
+        <span style="display:block;font-size:22px;font-weight:600">AI 写 .do</span>
+        <span style="display:block;font-size:17px;color:var(--ink3);margin-top:6px">Stata 的脚本</span></div><div style="width:28px;display:flex;align-items:center;justify-content:center;color:var(--line);font-size:22px">→</div><div style="flex:1;border:1.5px solid var(--line);
+        background:#fffdf8;padding:18px 14px;text-align:center">
+        <span style="display:block;font-family:var(--display);font-weight:700;font-size:26px;color:var(--sea);margin-bottom:7px">03</span>
+        <span style="display:block;font-size:22px;font-weight:600">后台运行</span>
+        <span style="display:block;font-size:17px;color:var(--ink3);margin-top:6px">不开图形界面</span></div><div style="width:28px;display:flex;align-items:center;justify-content:center;color:var(--line);font-size:22px">→</div><div style="flex:1;border:1.5px solid var(--line);
+        background:#fffdf8;padding:18px 14px;text-align:center">
+        <span style="display:block;font-family:var(--display);font-weight:700;font-size:26px;color:var(--sea);margin-bottom:7px">04</span>
+        <span style="display:block;font-size:22px;font-weight:600">生成 .log</span>
+        <span style="display:block;font-size:17px;color:var(--ink3);margin-top:6px">所有输出都在里面</span></div><div style="width:28px;display:flex;align-items:center;justify-content:center;color:var(--line);font-size:22px">→</div><div style="flex:1;border:1.5px solid var(--line);
+        background:#fffdf8;padding:18px 14px;text-align:center">
+        <span style="display:block;font-family:var(--display);font-weight:700;font-size:26px;color:var(--sea);margin-bottom:7px">05</span>
+        <span style="display:block;font-size:22px;font-weight:600">AI 读结果</span>
+        <span style="display:block;font-size:17px;color:var(--ink3);margin-top:6px">看懂数据 / 看懂报错</span></div></div>
+    <div class="reveal" style="width:100%;height:40px;position:relative;margin-bottom:18px">
+      <div style="position:absolute;left:8%;right:8%;top:50%;height:1.5px;background:var(--sea);opacity:.45"></div>
+      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--paper);padding:0 16px;font-size:19px;color:var(--sea)">报错就自己改了重跑</div>
+    </div><div class="row reveal"><div class="card ok reveal"><h4>这是一个闭环</h4><p>报错信息就在 .log 里，AI 读到后自己改 .do 再跑一遍，直到跑通。<b class="sea">你全程只说中文。</b></p></div><div class="card hot reveal"><h4>但代码你得看得懂</h4><p>答辩时是你在台上。它写的每行都该让你能解释。</p></div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">38</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5 on">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">08</span><div style="flex:1"><p class="skick">STEP 1</p><h2 class="stitle">装 Stata，找到程序路径</h2></div><span class="ln"></span></div><div class="sbody"><div class="step reveal"><span class="sn">1</span><div class="sc"><h4>装 Stata</h4><p>商业软件，去学校图书馆/信息中心网站找「正版软件下载」。<b class="sig">装在纯英文路径</b>（默认的 C:\Program Files\Stata18 就很好）。</p></div></div><div class="step reveal"><span class="sn">2</span><div class="sc"><h4>查安装目录（版本号换成你装的）</h4></div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>Windows PowerShell</b></div><div class="termbody sm">PS&gt; dir "C:\Program Files\Stata18"
+<span class="o">StataSE-64.exe</span></div></div><div class="tbl xs reveal"><table><tr><th style="width:340px">你看到的</th><th>说明</th><th>完整路径就是</th></tr><tr><td class=""><code>StataMP-64.exe</code></td><td class="">MP 版（最快）</td><td class="mono"><code>C:\Program Files\Stata18\StataMP-64.exe</code></td></tr><tr><td class=""><code>StataSE-64.exe</code></td><td class="">SE 版（最常见）</td><td class="mono"><code>C:\Program Files\Stata18\StataSE-64.exe</code></td></tr><tr><td class=""><code>StataBE-64.exe</code></td><td class="">BE 版（基础版）</td><td class="mono"><code>C:\Program Files\Stata18\StataBE-64.exe</code></td></tr></table></div><div class="card ok reveal"><h4>找不到装哪了？</h4><p>开始菜单里<b>右键 Stata 图标 →「打开文件位置」</b>。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">39</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5 on">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">08</span><div style="flex:1"><p class="skick">STEP 2</p><h2 class="stitle">告诉 AI 你的 Stata 在哪</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">这一步<b>做一次，以后每次都记得</b>。Codex 会读 <code>AGENTS.md</code> 当长期备忘录。把下面整段粘进 PowerShell（路径换成你自己的）：</p><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>Windows PowerShell</b></div><div class="termbody xs">PS&gt; New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.codex"
+PS&gt; @"
+<span class="cm"># 我的环境说明</span>
+
+<span class="cm">## Stata</span>
+我电脑上装了 Stata，程序路径是：
+C:\Program Files\Stata18\StataSE-64.exe
+
+运行 .do 文件（批处理模式，不开图形界面）：
+    cd 到 .do 文件所在目录
+    &amp; "C:\Program Files\Stata18\StataSE-64.exe" /e do 文件名.do
+
+跑完会在同目录生成同名 .log 文件。请你跑完主动读取 .log 向我解释结果；
+如果有报错，请修改 .do 后重新运行，直到跑通为止。
+
+<span class="cm">## 我的专业</span>
+国际贸易。常做：引力模型、贸易流量回归、面板数据、描述统计、出口竞争力指数。
+
+<span class="cm">## 我的习惯</span>
+- 请用中文跟我交流，写 .do 时多写注释，我要看得懂
+- 回归结果请帮我解读系数含义，不要只给我一堆数字
+- 我的工作目录在 C:\work，路径里不要出现中文
+"@ | Out-File -FilePath "$env:USERPROFILE\.codex\AGENTS.md" -Encoding utf8</div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">40</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5 on">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">08</span><div style="flex:1"><p class="skick">DEMO 1 / 4</p><h2 class="stitle">引力模型 Demo：起手式</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">引力模型是国际贸易实证的看家本领 —— 两国贸易额与各自经济规模成正比、与距离成反比。</p><div class="step reveal"><span class="sn">1</span><div class="sc"><h4>建工作文件夹，启动 Codex</h4></div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>Windows PowerShell</b></div><div class="termbody sm">PS&gt; New-Item -ItemType Directory -Force -Path C:\work\gravity-demo
+PS&gt; cd C:\work\gravity-demo
+PS&gt; codex</div></div><div class="step reveal"><span class="sn">2</span><div class="sc"><h4>把下面这段整个粘给 Codex</h4></div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>粘进 Codex</b></div><div class="termbody xs">帮我做一个引力模型的 Stata 演示。
+
+要求：
+1. 先生成一份模拟的双边贸易数据（500 个观测），
+   包含：出口国 GDP、进口国 GDP、两国距离、贸易额
+2. 写一个 gravity.do 文件，做取对数 + 描述统计 +
+   引力模型回归（稳健标准误）
+3. 用批处理模式运行这个 do 文件
+4. 读取生成的 log 文件，用中文给我解释回归结果，
+   特别是距离系数的经济含义
+
+我的 Stata 在 C:\Program Files\Stata18\StataSE-64.exe</div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">41</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5 on">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">08</span><div style="flex:1"><p class="skick">DEMO 2 / 4</p><h2 class="stitle">它会生成这样一个 .do 文件</h2></div><span class="ln"></span></div><div class="sbody"><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>gravity.do</b></div><div class="termbody xs"><span class="cm">* ---------- 1. 生成模拟数据 ----------</span>
+<span class="cm">* 真实研究中，这里换成 import excel 读你自己的数据</span>
+clear all
+set more off
+set seed 12345
+set obs 500
+
+gen country_i = ceil(_n/20)              <span class="cm">// 出口国编号</span>
+gen country_j = mod(_n, 20) + 1          <span class="cm">// 进口国编号</span>
+drop if country_i == country_j           <span class="cm">// 剔除自己跟自己贸易</span>
+
+gen gdp_i = exp(rnormal(10, 1))          <span class="cm">// 出口国 GDP</span>
+gen gdp_j = exp(rnormal(10, 1))          <span class="cm">// 进口国 GDP</span>
+gen dist  = exp(rnormal(8, 0.5))         <span class="cm">// 两国距离（公里）</span>
+
+<span class="cm">* 按引力模型的理论关系生成贸易额，再加随机扰动</span>
+gen trade = exp(0.8*ln(gdp_i) + 0.8*ln(gdp_j) - 1.1*ln(dist) ///
+                + rnormal(0, 0.5))
+
+<span class="cm">* ---------- 2. 取对数：系数直接读作弹性 ----------</span>
+gen ln_trade = ln(trade)
+gen ln_gdp_i = ln(gdp_i)
+gen ln_gdp_j = ln(gdp_j)
+gen ln_dist  = ln(dist)
+
+<span class="cm">* ---------- 3. 描述性统计 ----------</span>
+summarize ln_trade ln_gdp_i ln_gdp_j ln_dist
+
+<span class="cm">* ---------- 4. 引力模型回归 ----------</span>
+regress ln_trade ln_gdp_i ln_gdp_j ln_dist, robust</div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">42</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5 on">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">08</span><div style="flex:1"><p class="skick">DEMO 3 / 4</p><h2 class="stitle">然后它自己跑、自己读日志</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">Codex 会自动执行这行。<code>/e</code> 是"批处理执行"：不开图形界面，安静跑完，输出写进 <code>gravity.log</code>。</p><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>Codex 自己执行</b></div><div class="termbody sm">PS&gt; &amp; "C:\Program Files\Stata18\StataSE-64.exe" /e do gravity.do</div></div><div class="card hot reveal"><h4>📌 注意开头的 & 和引号</h4><p>路径里有空格（<code>Program Files</code>），PowerShell 里<b class="sig">必须写成 &amp; "C:\Program Files\..."</b>，否则报错。这是 Windows 上最容易翻车的一处。</p></div><div class="tbl xs reveal"><table><tr><th style="width:320px">变量</th><th style="width:150px">系数</th><th>解读</th></tr><tr><td class="">ln(出口国GDP)</td><td class="">约 0.80</td><td class="">出口国 GDP 每增加 1%，贸易额增加约 0.80%</td></tr><tr><td class="">ln(进口国GDP)</td><td class="">约 0.80</td><td class="">进口国 GDP 每增加 1%，贸易额增加约 0.80%</td></tr><tr><td class="hot"><b>ln(距离)</b></td><td class="hot"><b>约 −1.10</b></td><td class="hot"><b>距离每增加 1%，贸易额下降约 1.10%</b></td></tr></table></div><div class="card ok reveal"><h4>这就是闭环的价值</h4><p>你没写一行代码，但拿到了能写进论文的结果和解读。距离系数接近 −1，正是文献里的<b>"距离之谜"</b>。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">43</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5 on">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">08</span><div style="flex:1"><p class="skick">DEMO 4 / 4</p><h2 class="stitle">结果出来后继续追问</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">Demo 跑通只是起点。接着可以直接说：</p><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>继续对 Codex 说</b></div><div class="termbody sm">把回归结果导出成三线表，Word 能直接用的格式
+
+加入"是否同属一个自贸区"这个虚拟变量再跑一次，对比两次结果有什么变化
+
+帮我检查一下有没有异方差和多重共线性问题
+
+把这个结果写成论文实证部分的一段话，学术语气</div></div><p class="lead reveal"><b>换成你自己的数据</b>时，把"生成模拟数据"那段换掉即可：</p><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>用自己的数据</b></div><div class="termbody sm">我的数据在 C:\work\thesis\trade_data.xlsx，第一个工作表，
+有这些列：年份、出口国、进口国、贸易额、出口国GDP、进口国GDP、距离。
+
+帮我读进 Stata，做数据清洗（处理缺失值、剔除异常值），然后跑引力模型。</div></div><div class="card hot reveal"><h4>⚠ 数据文件放 C:\work\ 下，文件名也用英文</h4><p>中文路径是 Windows 上最常见的翻车原因。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">44</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5 on">跑 Stata</div><div class="tab t6">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">08</span><div style="flex:1"><p class="skick">FALLBACK</p><h2 class="stitle">跑不通？还有备用方案</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">有些学校的授权版本可能限制命令行调用。这时候退一步走<b>半自动</b>，一样能用，而且<b class="sea">完全不用配置</b>。</p><div class="step reveal"><span class="sn">1</span><div class="sc"><h4>让 Codex 只写 .do 文件，不要求它运行</h4></div></div><div class="step reveal"><span class="sn">2</span><div class="sc"><h4>你自己双击打开 Stata，把 .do 拖进去，点运行</h4></div></div><div class="step reveal"><span class="sn">3</span><div class="sc"><h4>把结果窗口的输出复制粘贴回 Codex</h4></div></div><div class="step reveal"><span class="sn">4</span><div class="sc"><h4>让它帮你解读、改代码</h4></div></div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>对 Codex 这么说</b></div><div class="termbody sm">我的 Stata 不能用命令行运行，你只负责写 .do 文件，
+我自己在 Stata 里跑完把结果贴给你。</div></div><div class="card ok reveal"><h4>Stata 之外，这些也常用</h4><p><b>Excel</b>「把这三个表按国家和年份合并」　<b>Word</b>「转成 Word，套学校论文格式」　<b>PDF</b>「从海关年鉴 PDF 里提取出口数据」　<b>PPT</b>「做成答辩用的 PPT」</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">45</div>
+  </div>
+</section>
+<section class="slide divider">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6 on">排错速查</div></div>
+    <div class="wrap"><div class="reveal"><div class="dnum">09</div><h2>出问题怎么办</h2><div class="drule"></div><p class="dsub">按现象查表 —— 大部分问题是前四条</p></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">46</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6 on">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">09</span><div style="flex:1"><p class="skick">TOP 4</p><h2 class="stitle">最常见的四个问题</h2></div><span class="ln"></span></div><div class="sbody"><div class="step reveal"><span class="sn">1</span><div class="sc"><h4>「不是内部或外部命令」</h4><p><b class="sea">① 关掉 PowerShell 窗口重新打开</b>（解决 90%）　② 还不行<b>重启电脑</b>　③ 再不行手动加 PATH。<br><span style="font-size:19px;color:var(--ink3)">原因：Windows 只在窗口启动时读一次 PATH。这是 Windows 上最常见的问题。</span></p></div></div><div class="step reveal"><span class="sn">2</span><div class="sc"><h4>下载卡住 / 连接超时</h4><p><b class="sea">查 Clash Verge 的 Tun 模式</b>，然后 <code>curl.exe -I https://www.google.com</code> 要看到 <code>HTTP/2 200</code>。</p></div></div><div class="step reveal"><span class="sn">3</span><div class="sc"><h4>「禁止运行脚本」</h4><p><code>Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</code>，输 <code>Y</code> 回车。</p></div></div><div class="step reveal"><span class="sn">4</span><div class="sc"><h4>一堆看不懂的怪错</h4><p><b class="sig">路径里有中文或空格？</b>把工作文件夹挪到 <code>C:\work\</code>。这条能解决相当一部分莫名其妙的报错。</p></div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">47</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6 on">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">09</span><div style="flex:1"><p class="skick">LOOKUP</p><h2 class="stitle">其余问题速查表</h2></div><span class="ln"></span></div><div class="sbody"><div class="tbl xs reveal"><table><tr><th style="width:400px">现象</th><th>先做这个</th></tr><tr><td class="">npm 报 <code>EACCES</code> / <code>EPERM</code></td><td class="">用<b>管理员身份</b>重开 PowerShell；还不行给 npm 换目录</td></tr><tr><td class="">401 / 403 / Invalid API Key</td><td class="">接口地址填反了？Claude 用 <code>/anthropic</code>，Codex 用 <code>/v1</code>；有余额吗；切完重启了吗</td></tr><tr><td class="">CC Switch 切了但没变化</td><td class=""><b class="sig">必须完全退出再重开</b> —— 运行中的会话里切不生效</td></tr><tr><td class="">技能装了但 AI 不用</td><td class="">结构 <code>技能名\SKILL.md</code>；<b class="sig">记事本保存编码必须选 UTF-8</b></td></tr><tr><td class="">中文乱码</td><td class="">用 Windows Terminal，或输 <code>chcp 65001</code></td></tr><tr><td class="">Stata 路径报错</td><td class="">必须写成 <code>&amp; "C:\Program Files\..."</code>，加 &amp; 和双引号</td></tr><tr><td class="">Stata 提示 license 错误</td><td class="">学校授权可能限制批处理，走"只写 .do"的备用方案</td></tr><tr><td class="">.do 文件报错</td><td class="">把 <code>.log</code> 内容<b>整个贴给 Codex</b>，它最擅长改这个</td></tr><tr><td class="">SmartScreen / 杀毒软件拦截</td><td class="">点「更多信息」→「仍要运行」；360、火绒等临时关闭或加白名单</td></tr></table></div><div class="card ok reveal"><h4>表里没有的报错</h4><p>把<b>完整</b>的错误信息复制下来，直接贴给 Claude Code 或 Codex。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">48</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6 on">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">09</span><div style="flex:1"><p class="skick">WINDOWS ONLY</p><h2 class="stitle">Windows 十条避坑清单</h2></div><span class="ln"></span></div><div class="sbody"><div class="tbl xs reveal"><table><tr><th style="width:60px">#</th><th style="width:400px">坑</th><th>对策</th></tr><tr><td class="">1</td><td class="">装完命令找不到</td><td class=""><b class="sig">关窗口重开</b>，还不行重启电脑</td></tr><tr><td class="">2</td><td class="">路径有中文/空格</td><td class="">一切都放 <code>C:\work\</code></td></tr><tr><td class="">3</td><td class="">脚本被禁止执行</td><td class=""><code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code></td></tr><tr><td class="">4</td><td class="">中文乱码</td><td class="">用 Windows Terminal，或 <code>chcp 65001</code></td></tr><tr><td class="">5</td><td class="">记事本存的文件乱码</td><td class="">保存时右下角编码选 <b>UTF-8</b></td></tr><tr><td class="">6</td><td class=""><code>curl</code> 报错</td><td class="">PowerShell 里要写 <code>curl.exe</code></td></tr><tr><td class="">7</td><td class="">Stata 路径有空格</td><td class="">写成 <code>&amp; "C:\Program Files\..."</code></td></tr><tr><td class="">8</td><td class="">隐藏文件夹看不见</td><td class="">资源管理器「查看」→ 勾「隐藏的项目」</td></tr><tr><td class="">9</td><td class="">杀毒软件拦截</td><td class="">临时关闭或加白名单</td></tr><tr><td class="">10</td><td class="">权限不足</td><td class="">用「终端(管理员)」重开</td></tr></table></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">49</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6 on">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">10</span><div style="flex:1"><p class="skick">CHEAT SHEET</p><h2 class="stitle">速查：命令与目录</h2></div><span class="ln"></span></div><div class="sbody"><div class="row reveal" style="align-items:flex-start"><div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>日常命令</b></div><div class="termbody sm">PS&gt; claude          <span class="cm"># 启动 Claude Code</span>
+PS&gt; codex           <span class="cm"># 启动 Codex</span></div></div></div><div><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>Claude Code 内部</b></div><div class="termbody sm">/help      所有命令
+/model     切换模型
+/clear     清空对话
+/exit      退出</div></div></div></div><div class="tbl sm reveal"><table><tr><th style="width:620px">重要目录（资源管理器地址栏直接粘贴）</th><th>放什么</th></tr><tr><td class="mono"><code>%USERPROFILE%\.claude\skills</code></td><td class="">Claude Code 个人技能</td></tr><tr><td class="mono"><code>%USERPROFILE%\.codex\skills</code></td><td class="">Codex 技能</td></tr><tr><td class="mono"><code>%USERPROFILE%\.codex\AGENTS.md</code></td><td class="">告诉 Codex 的长期备忘（Stata 路径写在这）</td></tr></table></div><div class="card ok reveal"><h4>以点开头的文件夹默认隐藏</h4><p>资源管理器「查看」→ 勾「隐藏的项目」才看得见。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">50</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6 on">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">10</span><div style="flex:1"><p class="skick">HEALTH CHECK</p><h2 class="stitle">全面体检脚本</h2></div><span class="ln"></span></div><div class="sbody"><p class="lead reveal">任何时候怀疑环境出问题，复制整段跑一遍。</p><div class="term reveal"><div class="termbar"><i></i><i></i><i></i><b>Windows PowerShell</b></div><div class="termbody xs">PS&gt; foreach ($c in @('git','node','npm','claude','codex')) {
+      if (Get-Command $c -EA SilentlyContinue) {
+        "{0,-8} {1}" -f $c, (&amp; $c --version 2&gt;&amp;1 | Select-Object -First 1)
+      } else { "{0,-8} ❌ 未安装" -f $c }
+    }
+    Get-ChildItem "$env:USERPROFILE\.claude\skills" -Directory -EA SilentlyContinue | Select -Expand Name
+    Get-ChildItem "$env:USERPROFILE\.codex\skills"  -Directory -EA SilentlyContinue | Select -Expand Name
+    try { $null = Invoke-WebRequest "https://www.google.com" -Method Head -TimeoutSec 8 -EA Stop
+          Write-Host "网络 ✅ 正常" }
+    catch { Write-Host "网络 ❌ 检查 Clash Verge" }</div></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">51</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6 on">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><span class="snum">11</span><div style="flex:1"><p class="skick">IMPORTANT</p><h2 class="stitle">几条重要提醒</h2></div><span class="ln"></span></div><div class="sbody"><div class="row reveal" style="align-items:stretch"><div class="card hot reveal"><h4>API Key 等于钱包</h4><p>不发群里、不传网上、不写进会交上去的文件。去 DeepSeek 后台设个<b>消费上限</b>，防止意外跑飞。</p></div><div class="card hot reveal"><h4>AI 会编参考文献</h4><p>它给的文献<b class="sig">可能根本不存在</b>。交稿前逐条核对，别直接用。</p></div></div><div class="row reveal" style="align-items:stretch"><div class="card  reveal"><h4>AI 会改你的文件</h4><p>重要文件先备份一份再让它动。</p></div><div class="card  reveal"><h4>计量结果你得自己懂</h4><p>它能跑能解释，但答辩时是你在台上。它写的每行代码你都该看得懂。</p></div></div><div class="card ok reveal"><h4>学术诚信</h4><p>很多学校现在要求声明 AI 使用情况，<code>/ars-disclosure</code> 能帮你生成。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">52</div>
+  </div>
+</section>
+<section class="slide ">
+  <div class="paper">
+    <div class="holes"><i></i><i></i><i></i><i></i></div>
+    <div class="tabs"><div class="tab t1">准备工作</div><div class="tab t2">装工具</div><div class="tab t3">配模型</div><div class="tab t4">装技能</div><div class="tab t5">跑 Stata</div><div class="tab t6 on">排错速查</div></div>
+    <div class="wrap"><div class="shead reveal"><div style="flex:1"><p class="skick">GET STARTED</p><h2 class="stitle">上手建议</h2></div><span class="ln"></span></div><div class="sbody"><div class="tbl sm reveal"><table><tr><th style="width:200px">时间</th><th>做什么</th></tr><tr><td class=""><b>第 1 周</b></td><td class="">只装 Claude Code + CC Switch + DeepSeek，拿它翻译、改文字，熟悉怎么对话</td></tr><tr><td class=""><b>第 2 周</b></td><td class="">装 <code>academic-research-skills</code>，用 <code>/ars-3w</code> 读几篇文献试试</td></tr><tr><td class=""><b>第 3 周</b></td><td class="">配 Stata 联动，跑一遍第 8 章的引力模型 Demo</td></tr><tr><td class=""><b>之后</b></td><td class="">换成自己的数据，开始做真正的论文</td></tr></table></div><div class="reveal" style="border-left:4px solid var(--sig);padding-left:26px;margin-top:8px"><p class="lead" style="font-size:26px"><b>遇到报错不要慌</b> —— 把完整的错误信息复制下来，直接贴给 Claude Code 或 Codex，它们最擅长解决这个。</p></div></div></div>
+    <div class="foot">安装配置教程 · Windows</div><div class="pg">53</div>
+  </div>
+</section>
+</div></div>
+<div id="editbadge">编辑模式 · E 退出 · ⌘S 导出</div>
+<div id="toc"><h3>目录 · 点击跳转 · ESC 关闭</h3><ol><li data-i="0"><b>01</b>封面</li><li data-i="1"><b>02</b>阅读前必看</li><li data-i="2"><b>03</b>三条保命规则</li><li data-i="3"><b>04</b>Windows 三条保命规则</li><li data-i="4"><b>05</b>这套东西怎么串起来</li><li data-i="5"><b>06</b>安装清单</li><li data-i="6"><b>07</b>打开 PowerShell</li><li data-i="7"><b>08</b>科学上网</li><li data-i="8"><b>09</b>为什么必须先做这一步</li><li data-i="9"><b>10</b>下载安装 Clash Verge</li><li data-i="10"><b>11</b>开三个开关，然后验证</li><li data-i="11"><b>12</b>装基础工具</li><li data-i="12"><b>13</b>装 Git for Windows</li><li data-i="13"><b>14</b>装 Node.js</li><li data-i="14"><b>15</b>阶段检查 ①</li><li data-i="15"><b>16</b>安装 Claude Code</li><li data-i="16"><b>17</b>两种装法，A 失败再用 B</li><li data-i="17"><b>18</b>第一次启动</li><li data-i="18"><b>19</b>Claude Code 常用命令</li><li data-i="19"><b>20</b>安装 Codex</li><li data-i="20"><b>21</b>CC Switch</li><li data-i="21"><b>22</b>先用一个比喻讲清楚</li><li data-i="22"><b>23</b>为什么你特别需要它</li><li data-i="23"><b>24</b>安装 CC Switch</li><li data-i="24"><b>25</b>拿到你的"SIM 卡"</li><li data-i="25"><b>26</b>把"卡"插进 Claude Code</li><li data-i="26"><b>27</b>验证，然后配 Codex</li><li data-i="27"><b>28</b>日常怎么用</li><li data-i="28"><b>29</b>安装 Skills</li><li data-i="29"><b>30</b>Skills 是什么</li><li data-i="30"><b>31</b>装 Claude Code 插件</li><li data-i="31"><b>32</b>这三个插件是干嘛的</li><li data-i="32"><b>33</b>论文全流程：16 个命令</li><li data-i="33"><b>34</b>装个人技能</li><li data-i="34"><b>35</b>装 Codex 的 14 个科研技能</li><li data-i="35"><b>36</b>这 14 个技能能干什么</li><li data-i="36"><b>37</b>让 AI 帮你跑 Stata</li><li data-i="37"><b>38</b>原理：AI 不替你点鼠标</li><li data-i="38"><b>39</b>装 Stata，找到程序路径</li><li data-i="39"><b>40</b>告诉 AI 你的 Stata 在哪</li><li data-i="40"><b>41</b>引力模型 Demo：起手式</li><li data-i="41"><b>42</b>它会生成这样一个 .do 文件</li><li data-i="42"><b>43</b>然后它自己跑、自己读日志</li><li data-i="43"><b>44</b>结果出来后继续追问</li><li data-i="44"><b>45</b>跑不通？还有备用方案</li><li data-i="45"><b>46</b>出问题怎么办</li><li data-i="46"><b>47</b>最常见的四个问题</li><li data-i="47"><b>48</b>其余问题速查表</li><li data-i="48"><b>49</b>Windows 十条避坑清单</li><li data-i="49"><b>50</b>速查：命令与目录</li><li data-i="50"><b>51</b>全面体检脚本</li><li data-i="51"><b>52</b>几条重要提醒</li><li data-i="52"><b>53</b>上手建议</li></ol></div>
+<div class="chrome">
+  <button id="btoc">目录</button>
+  <button id="prev">◀</button>
+  <span class="count"><b id="cur">1</b> / <span id="tot">0</span></span>
+  <button id="next">▶</button>
+  <div class="bar"><i></i></div>
+</div>
+<script>
+const LSKEY='setup-win-page';
+
+/* === 舞台等比缩放 === */
+const stage=document.querySelector('.deck-stage');
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);
+  stage.style.transform='translate('+((innerWidth-1920*s)/2)+'px,'+((innerHeight-1080*s)/2)+'px) scale('+s+')';}
+addEventListener('resize',fit);fit();
+
+/* === 翻页 === */
+const slides=[...document.querySelectorAll('.slide')];let i=0;
+document.getElementById('tot').textContent=slides.length;
+const bar=document.querySelector('.bar i');
+function go(n){i=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('cur').textContent=i+1;
+  bar.style.width=((i+1)/slides.length*100)+'%';
+  try{localStorage.setItem(LSKEY,i)}catch(e){}}
+document.getElementById('next').onclick=()=>go(i+1);
+document.getElementById('prev').onclick=()=>go(i-1);
+addEventListener('keydown',e=>{
+  if(document.body.classList.contains('editing'))return;
+  if(e.key==='Escape'){toc.classList.remove('on');return}
+  if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault();go(i+1)}
+  if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();go(i-1)}
+  if(e.key==='Home')go(0); if(e.key==='End')go(slides.length-1);
+  if(e.key==='t'||e.key==='T')toc.classList.toggle('on');
+});
+let tx=0;addEventListener('touchstart',e=>tx=e.changedTouches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-tx;
+  if(Math.abs(d)>60)go(d<0?i+1:i-1)},{passive:true});
+
+/* === 记住上次看到第几页 === */
+try{const sv=parseInt(localStorage.getItem(LSKEY));if(sv>0&&sv<slides.length)go(sv);else go(0)}catch(e){go(0)}
+
+/* === 目录（T 键） === */
+const toc=document.getElementById('toc');
+document.getElementById('btoc').onclick=()=>toc.classList.toggle('on');
+toc.addEventListener('click',e=>{const li=e.target.closest('li');
+  if(li){go(+li.dataset.i);toc.classList.remove('on')}else if(e.target===toc)toc.classList.remove('on')});
+
+/* === 代码块一键复制 === */
+document.querySelectorAll('.term').forEach(t=>{
+  const btn=document.createElement('button');btn.className='copy';btn.textContent='复制';
+  btn.onclick=()=>{const body=t.querySelector('.termbody');
+    // 只剥掉提示符；注释一律保留 —— .do 文件里的注释是正文，不能删
+    const txt=[...body.childNodes].map(n=>n.textContent).join('')
+      .split('\n').map(l=>l.replace(/^(\s*)(\$|PS>)\s?/,'$1')).join('\n').trim();
+    navigator.clipboard.writeText(txt).then(()=>{btn.textContent='已复制';btn.classList.add('done');
+      setTimeout(()=>{btn.textContent='复制';btn.classList.remove('done')},1400)});};
+  t.appendChild(btn);
+});
+
+/* === 就地编辑 === */
+const EDITABLE='.stitle,.skick,.lead,.card h4,.card p,.step h4,.step p,td,th,.termbody,.foot,h1,h2,.dsub';
+let editing=false;
+function toggleEdit(on){editing=on===undefined?!editing:on;
+  document.body.classList.toggle('editing',editing);
+  document.querySelectorAll(EDITABLE).forEach(el=>{
+    if(editing)el.setAttribute('contenteditable','true');else el.removeAttribute('contenteditable')});
+  if(!editing&&document.activeElement)document.activeElement.blur()}
+function exportHTML(){toggleEdit(false);
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['<!doctype html>\n'+document.documentElement.outerHTML],{type:'text/html;charset=utf-8'}));
+  a.download=document.title+'.html';a.click();URL.revokeObjectURL(a.href)}
+addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key==='s'){e.preventDefault();exportHTML();return}
+  const a=document.activeElement,typing=a&&a.getAttribute&&a.getAttribute('contenteditable')==='true';
+  if((e.key==='e'||e.key==='E')&&!e.metaKey&&!e.ctrlKey&&!typing){e.preventDefault();toggleEdit()}
+},true);
+</script></body></html>
