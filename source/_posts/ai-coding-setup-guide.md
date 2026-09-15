@@ -16,8 +16,8 @@ tags:
 
 ## 指南本体
 
-- **[macOS 版](/guides/setup-macos.html)**（55 页）
-- **[Windows 版](/guides/setup-windows.html)**（53 页）
+- **[macOS 版](/guides/setup-macos)**（55 页）
+- **[Windows 版](/guides/setup-windows)**（53 页）
 
 操作方式：`←` `→` 翻页，按 `T` 打开目录跳转，代码块右上角有「复制」按钮，`⌘P` 可打印。页面会记住上次看到第几页——装到一半被打断是常态。
 
